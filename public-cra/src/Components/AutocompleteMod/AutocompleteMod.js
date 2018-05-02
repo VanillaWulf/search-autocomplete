@@ -75,10 +75,10 @@ const kladr = [
 
 // https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
 function escapeRegexCharacters(str) {
-
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
 }
+
+//render functions
 
 function getSuggestionValue(suggestion) {
   return suggestion.City;
@@ -93,21 +93,7 @@ function renderSuggestion(suggestion) {
   );
 }
 
-function randomDelay() {
-  return 300 + Math.random() * 1000;
-  console.log(123);
-}
-
-const renderSuggestionsContainer = ({ containerProps, children, query }) => (
-  <div {...containerProps}>
-    {children}
-    {
-      <div className="footer">
-        Press Enter to search <strong>{query}</strong>
-      </div>
-    }
-  </div>
-);
+//customise component container
 
 class AutocompleteMod extends React.Component {
   constructor() {
@@ -118,43 +104,16 @@ class AutocompleteMod extends React.Component {
      suggestions: [],
      noSuggestions: false,
      error: false,
-     download: false,
      numberOfOptions: 0,
-     isLoadinig: false
+     isLoadinig: false,
+     message:''
    };
 
    this.getSuggestions = this.getSuggestions.bind(this);
- }
+   this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(this);
+};
 
- loadSuggestions(value) {
-   this.setState({
-     isLoading: true
-   });
-
-   // Fake an AJAX call
-   setTimeout(() => {
-     const suggestions =  this.getSuggestions(value);
-
-     if (value === this.state.value) {
-       this.setState({
-         isLoading: false,
-         suggestions
-       });
-     } else { // Ignore suggestions if input value changed
-       this.setState({
-         isLoading: false
-       });
-     }
-   }, randomDelay());
- }
-
- onChange = (event, { newValue, method }) => {
-   this.setState({
-     value: newValue
-   });
- };
-
- getSuggestions(value) {
+  getSuggestions(value) {
    const escapedValue = escapeRegexCharacters(value.trim());
    if (escapedValue === '') {
      return [];
@@ -163,25 +122,44 @@ class AutocompleteMod extends React.Component {
    const regex = new RegExp('^' + escapedValue, 'i');
 
    let searchResult = kladr.filter(kladr => regex.test(kladr.City));
+
    if (searchResult.length>5)
     {
      this.setState({
+       message: `Показано 5 из ${searchResult.length} найденных городов. Уточните запрос,чтобы увидеть остальные`,
        numberOfOptions: searchResult.length
      });
      return searchResult.splice(0,5);
-  } else{
-       return searchResult;
-   }
+   } else if(searchResult.length!=0 && searchResult.length<5){
+      this.setState({
+      message: ''
+      })
+      console.log(this.searchResult);
+      return searchResult;
+    }else if(searchResult.length===0){
+     console.log(123);
+     this.setState({
+       message:'Не найдено',
+      });
+      return [{Id:'', City: ''}];
+    }
 }
 
+onChange = (event, { newValue, method }) => {
+  this.setState({
+    value: newValue
+  });
+
+};
+
  onSuggestionsFetchRequested = ({ value }) => {
-   const suggestions = this.getSuggestions(value);
-   const isInputBlank = value.trim() === '';
-   const noSuggestions = !isInputBlank && suggestions.length === 0;
+  const suggestions = this.getSuggestions(value);
+  const isInputBlank = value.trim() === '';
+  const noSuggestions = !isInputBlank && suggestions.length === 0;
 
    this.setState({
      suggestions,
-     noSuggestions
+     noSuggestions,
    });
  };
 
@@ -191,15 +169,36 @@ class AutocompleteMod extends React.Component {
    });
  };
 
+renderSuggestionsContainer ({ containerProps, children }) {
+  if(!this.state.noSuggestions){
+    return(
+      <div {...containerProps}>
+      {children}
+      {
+        <div className="footer">
+          {this.state.message}
+          </div>
+      }
+   </div>
+    );
+  }else if(this.state.noSuggestions){
+    return(
+      <div {...containerProps}>
+       <div className="footer">
+         Не найдено
+       </div>
+       </div>
+       );
+ }
+};
 
 render() {
-   const { value, suggestions, noSuggestions,isLoading } = this.state;
+   const { value, suggestions, noSuggestions, isLoading } = this.state;
    const inputProps = {
      placeholder: "Начните вводить код или название города",
      value,
      onChange: this.onChange
    };
-   const status = (isLoading ? 'Loading...' : 'Type to load suggestions');
 
     return (
       <div>
@@ -210,21 +209,7 @@ render() {
           getSuggestionValue={getSuggestionValue}
           renderSuggestion={renderSuggestion}
           inputProps={inputProps}
-          renderSuggestionsContainer={renderSuggestionsContainer}/>
-        {
-        noSuggestions &&
-          <div className="no-suggestions">
-            Ничего не найдено
-          </div>
-      }
-          <div className="no-suggestions">
-          показаны 5 из {this.state.numberOfOptions}
-          </div>
-
-          <div className="status">
-            <strong>Status:</strong> {status}
-          </div>
-
+          renderSuggestionsContainer={this.renderSuggestionsContainer}/>
         </div>
       );
   }

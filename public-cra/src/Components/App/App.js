@@ -5,19 +5,14 @@ import Autocomplete from 'react-autocomplete';
 import Autosuggest from 'react-autosuggest';
 //import ComboboxNonB from '../ComboboxNonB/ComboboxNonB.js'
 import AutocompleteMod from '../AutocompleteMod/AutocompleteMod.js'
-
 import AutocompleteModWithNumbers from '../AutocompleteModWithNumbers/AutocompleteModWithNumbers.js'
-
 import ExpressRouting from '../../util/ExpressRouting';
 
 
 class App extends React.Component {
   constructor() {
     super();
-    this.state={
-      message: ""
-    }
- }
+}
 
  /*componentDidMount(){
    return fetch('api/hello')
@@ -35,11 +30,7 @@ class App extends React.Component {
       <div>
         <AutocompleteMod />
         <AutocompleteModWithNumbers />
-        <p>{this.state.message}</p>
-        </div>
-
-
-
+      </div>
       );
   }
 }
