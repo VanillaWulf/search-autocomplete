@@ -32,7 +32,7 @@ app.use(cors());
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// app.use('/', index)
+app.use('/', index)
 app.use('/kladr', kladr);
 
 //app.use('/', index);
@@ -41,3 +41,4 @@ app.use('/kladr', kladr);
 app.listen(port, function() {
   console.log("listening on port: ", port);
 })
+

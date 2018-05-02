@@ -9,4 +9,16 @@ router.get('/', function(req, res) {
   res.json({ title: 'hello' });
 });
 
+router.get('/app', function(req, res) {
+  res.json({ title: 'app' });
+});
+
+router.get('/kladr', function(req, res) {
+  res.json({ title: 'kladr' });
+});
+
+router.get('/users', function(req, res) {
+  res.json({ title: 'users' });
+});
+
 module.exports = router;
