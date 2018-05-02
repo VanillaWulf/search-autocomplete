@@ -14,7 +14,7 @@ class App extends React.Component {
     super();
 }
 
- /*componentDidMount(){
+ componentDidMount(){
    return fetch('api/hello')
    .then((response) => response.json())
    .then((responseJson) => {
@@ -22,7 +22,7 @@ class App extends React.Component {
        message: responseJson.messege
      })
    })
- }*/
+ }
 
  render() {
 

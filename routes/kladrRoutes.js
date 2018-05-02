@@ -5,8 +5,8 @@ const knex = require('../db/knex');
 
 /* GET kladr page. */
 
-router.get('/kladr', function(req, res) {
-  res.json({ title: 'hello' });
-});
+router.get('/', function(req, res) {
+   res.json({ title: 'hello' });
+ });
 
 module.exports = router;

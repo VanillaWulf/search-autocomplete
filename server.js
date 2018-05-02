@@ -7,14 +7,14 @@ const logger = require('morgan');
 const knex = require('./db/knex');
 
 const kladr = require('./routes/kladrRoutes');
+const index = require('./routes/indexRoutes');
 
-//const index = require('./routes/indexRoutes');
 //const todos = require('./routes/todosRoutes');
 
 const app = express();
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+//app.set('views', path.join(__dirname, 'views'));
+//app.set('view engine', 'ejs');
 
 //для статичного html
 //app.use(express.static(__dirname + '/public-static-html'));
@@ -22,9 +22,6 @@ app.set('view engine', 'ejs');
 //для react-app
 app.use(express.static(__dirname + '/public-cra/build/'));
 
-app.get('api/hello',function(req,res){
-  res.json({message:'hello'});
-})
 
 app.use(logger('dev'));
 app.use(cors());
