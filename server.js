@@ -7,6 +7,7 @@ const logger = require('morgan');
 const knex = require('./db/knex');
 
 const kladr = require('./routes/kladrRoutes');
+const index = require('./routes/indexRoutes');
 
 //const index = require('./routes/indexRoutes');
 //const todos = require('./routes/todosRoutes');
@@ -31,6 +32,7 @@ app.use(cors());
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// app.use('/', index)
 app.use('/kladr', kladr);
 
 //app.use('/', index);
