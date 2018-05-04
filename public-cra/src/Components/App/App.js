@@ -6,23 +6,27 @@ import Autosuggest from 'react-autosuggest';
 //import ComboboxNonB from '../ComboboxNonB/ComboboxNonB.js'
 import AutocompleteMod from '../AutocompleteMod/AutocompleteMod.js'
 import AutocompleteModWithNumbers from '../AutocompleteModWithNumbers/AutocompleteModWithNumbers.js'
-import ExpressRouting from '../../util/ExpressRouting';
-
+//import GetKladr from '../../util/GetKladr';
+//var customData = require('../../testdata/kladr.json');
 
 class App extends React.Component {
   constructor() {
     super();
+    this.state={
+      kladr: ''
+    }
 }
 
- componentDidMount(){
-   return fetch('api/hello')
+ /*componentDidMount(){
+   return fetch('/kladr')
    .then((response) => response.json())
    .then((responseJson) => {
      this.setState({
        message: responseJson.messege
      })
    })
- }
+   console.log(this.state.message);
+ }*/
 
  render() {
 
