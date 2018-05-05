@@ -1,8 +1,11 @@
+//component with error of connecting
+
 import React, { Component } from 'react';
-import './AutocompleteMod.css';
+import theme from './AutocompleteMod.css';
 import Autocomplete from 'react-autocomplete';
-import Autosuggest from 'react-autosuggest';
 import customData from '../../testdata/kladr.json';
+import Autosuggest from 'react-autosuggest';
+import GetKladr from '../../util/GetKladr';
 
 const kladr = customData;
 
@@ -11,7 +14,7 @@ function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-//work with massive
+//work with array
 function getSuggestionValue(suggestion) {
   return suggestion.City;
 }
@@ -24,11 +27,9 @@ function renderSuggestion(suggestion) {
   );
 }
 
-//customise component container
-
 class AutocompleteMod extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
      value: '',
@@ -44,6 +45,7 @@ class AutocompleteMod extends React.Component {
    this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(this);
 };
 
+
 loadSuggestions(value) {
   // Cancel the previous request
   if (this.lastRequestId !== null) {
@@ -56,7 +58,6 @@ loadSuggestions(value) {
 
   // Fake request
     this.lastRequestId = setTimeout(() => {
-    //requestTimeout
     this.setState({
       isLoading: false,
       suggestions: this.getSuggestions(value),
@@ -69,7 +70,7 @@ loadSuggestions(value) {
    if (escapedValue === '') {
      return [];
    }
-
+   console.log('autocomplete');
    const regex = new RegExp('^' + escapedValue, 'i');
 
    let searchResult = kladr.filter(kladr => regex.test(kladr.City));
@@ -110,6 +111,7 @@ onChange = (event, { newValue, method }) => {
    });
  };
 
+//customise component container
 renderSuggestionsContainer  ({ containerProps, children }) {
   if(this.state.isLoading){
     return(

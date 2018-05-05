@@ -1,0 +1,12 @@
+const GetKladr{
+  componentDidMount(){
+    return fetch('/kladr')
+    .then((response) => response.json())
+    .then((responseJson) => {
+      return responseJson.message;
+      })
+
+
+};
+
+export default GetKladr;

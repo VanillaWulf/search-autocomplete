@@ -7,11 +7,11 @@ var kladr = require('../kladr.json');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'This cool stuff' });
+  res.render(express.static(__dirname + '/public-cra/build/'));
 });
 
-router.get('/kladr', function(req, res, next) {
+/*router.get('/kladr', function(req, res, next) {
   res.json(kladr);
- });
+});*/
 
 module.exports = router;

@@ -1,10 +1,11 @@
+//component with routing to serv
+
 import React, { Component } from 'react';
-import './AutocompleteModWithNumbers.css';
+import theme from './AutocompleteModRouting.css';
 import Autocomplete from 'react-autocomplete';
-import Autosuggest from 'react-autosuggest';
-//import ComboboxNonB from '../ComboboxNonB/ComboboxNonB.js'
-//import ExpressRouting from '../../util/ExpressRouting';
 import customData from '../../testdata/kladr.json';
+import Autosuggest from 'react-autosuggest';
+import GetKladr from '../../util/GetKladr';
 
 const kladr = customData;
 
@@ -13,8 +14,7 @@ function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-//render functions
-
+//work with array
 function getSuggestionValue(suggestion) {
   return suggestion.City;
 }
@@ -22,38 +22,55 @@ function getSuggestionValue(suggestion) {
 function renderSuggestion(suggestion) {
   return (
     <div>
-    <span>{suggestion.Id}</span>
     <span>{suggestion.City}</span>
     </div>
   );
 }
 
-//customise component container
-
-class AutocompleteModWithNumbers extends React.Component {
-  constructor() {
-    super();
+class AutocompleteModRouting extends React.Component {
+  constructor(props) {
+    super(props);
 
     this.state = {
      value: '',
      suggestions: [],
      noSuggestions: false,
-     error: false,
-     numberOfOptions: 0,
      isLoadinig: false,
-     message:''
+     message:'',
+     isServerError: false
    };
 
+   this.lastRequestId = null;
    this.getSuggestions = this.getSuggestions.bind(this);
    this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(this);
 };
+
+
+loadSuggestions(value) {
+  // Cancel the previous request
+  if (this.lastRequestId !== null) {
+    clearTimeout(this.lastRequestId);
+  }
+  //
+  this.setState({
+    isLoading: true,
+  });
+
+  // Fake request
+    this.lastRequestId = setTimeout(() => {
+    this.setState({
+      isLoading: false,
+      suggestions: this.getSuggestions(value),
+    });
+  }, 1000);
+}
 
   getSuggestions(value) {
    const escapedValue = escapeRegexCharacters(value.trim());
    if (escapedValue === '') {
      return [];
    }
-
+   console.log('autocomplete');
    const regex = new RegExp('^' + escapedValue, 'i');
 
    let searchResult = kladr.filter(kladr => regex.test(kladr.City));
@@ -61,41 +78,31 @@ class AutocompleteModWithNumbers extends React.Component {
    if (searchResult.length>5)
     {
      this.setState({
+       noSuggestions: false,
        message: `Показано 5 из ${searchResult.length} найденных городов. Уточните запрос,чтобы увидеть остальные`,
-       numberOfOptions: searchResult.length
-     });
-     return searchResult.splice(0,5);
-   } else if(searchResult.length!=0 && searchResult.length<5){
-      this.setState({
-      message: ''
-      })
-      console.log(this.searchResult);
-      return searchResult;
-    }else if(searchResult.length===0){
-     console.log(123);
-     this.setState({
-       message:'Не найдено',
       });
+     return searchResult.splice(0,5);
+   } else if(searchResult.length===0){
+     this.setState({
+       noSuggestions: true
+     });
       return [{Id:'', City: ''}];
-    }
+    } else if(searchResult.length!=0 && searchResult.length<5){
+       this.setState({
+       message: ''
+       })
+       return searchResult;
+     }
 }
 
 onChange = (event, { newValue, method }) => {
   this.setState({
     value: newValue
   });
-
 };
 
  onSuggestionsFetchRequested = ({ value }) => {
-  const suggestions = this.getSuggestions(value);
-  const isInputBlank = value.trim() === '';
-  const noSuggestions = !isInputBlank && suggestions.length === 0;
-
-   this.setState({
-     suggestions,
-     noSuggestions,
-   });
+   this.loadSuggestions(value);
  };
 
  onSuggestionsClearRequested = () => {
@@ -104,8 +111,34 @@ onChange = (event, { newValue, method }) => {
    });
  };
 
-renderSuggestionsContainer ({ containerProps, children }) {
-  if(!this.state.noSuggestions){
+//customise component container
+renderSuggestionsContainer  ({ containerProps, children }) {
+  if(this.state.isLoading){
+    return(
+      <div {...containerProps}>
+       <div className="footer">
+         Грузится
+       </div>
+       </div>
+       );
+  }else if(this.state.isServerError){
+      return(
+        <div {...containerProps}>
+         <div className="footer">
+           Ошибка
+           <button>Обновить</button>
+         </div>
+         </div>
+         );
+    }else if(this.state.noSuggestions){
+    return(
+      <div {...containerProps}>
+       <div className=" footer">
+         Не найдено
+       </div>
+       </div>
+       );
+ }else if(!this.state.noSuggestions){
     return(
       <div {...containerProps}>
       {children}
@@ -116,15 +149,7 @@ renderSuggestionsContainer ({ containerProps, children }) {
       }
    </div>
     );
-  }else if(this.state.noSuggestions){
-    return(
-      <div {...containerProps}>
-       <div className="footer">
-         Не найдено
-       </div>
-       </div>
-       );
- }
+  }
 };
 
 render() {
@@ -135,7 +160,7 @@ render() {
      onChange: this.onChange
    };
 
-    return (
+  return (
       <div>
       <Autosuggest
           suggestions={suggestions}
@@ -150,4 +175,4 @@ render() {
   }
 }
 
-export default AutocompleteModWithNumbers;
+export default AutocompleteModRouting;
