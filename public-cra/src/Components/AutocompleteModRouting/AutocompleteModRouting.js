@@ -5,7 +5,7 @@ import theme from './AutocompleteModRouting.css';
 import Autocomplete from 'react-autocomplete';
 import customData from '../../testdata/kladr.json';
 import Autosuggest from 'react-autosuggest';
-import GetKladr from '../../util/GetKladr';
+import GetKladr from '../../util/GetKladr.js';
 
 const kladr = customData;
 
@@ -33,6 +33,7 @@ class AutocompleteModRouting extends React.Component {
 
     this.state = {
      value: '',
+     results:[],
      suggestions: [],
      noSuggestions: false,
      isLoadinig: false,
@@ -43,7 +44,8 @@ class AutocompleteModRouting extends React.Component {
    this.lastRequestId = null;
    this.getSuggestions = this.getSuggestions.bind(this);
    this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(this);
-};
+
+   };
 
 
 loadSuggestions(value) {
@@ -56,24 +58,41 @@ loadSuggestions(value) {
     isLoading: true,
   });
 
+  GetKladr.getKladrArray(value)
+   .then(results =>this.setState({results: results}));
+
+  console.log('state of results '+ this.state.results);
+
+   this.setState({
+     isLoading: false,
+     suggestions: this.getSuggestions(this.state.results)
+   });
+
   // Fake request
-    this.lastRequestId = setTimeout(() => {
+  /*  this.lastRequestId = setTimeout(() => {
     this.setState({
       isLoading: false,
       suggestions: this.getSuggestions(value),
     });
-  }, 1000);
-}
+  }, 1000);*/
+};
 
   getSuggestions(value) {
-   const escapedValue = escapeRegexCharacters(value.trim());
+  /*const escapedValue = escapeRegexCharacters(value.trim());
    if (escapedValue === '') {
      return [];
    }
-   console.log('autocomplete');
+
    const regex = new RegExp('^' + escapedValue, 'i');
 
    let searchResult = kladr.filter(kladr => regex.test(kladr.City));
+*/
+
+  console.log('state of results '+ this.state.results)
+
+  let searchResult = value;
+
+  console.log('searchResult: ' + searchResult);
 
    if (searchResult.length>5)
     {
@@ -107,7 +126,8 @@ onChange = (event, { newValue, method }) => {
 
  onSuggestionsClearRequested = () => {
    this.setState({
-     suggestions: []
+     suggestions: [],
+     results: []
    });
  };
 
@@ -153,7 +173,7 @@ renderSuggestionsContainer  ({ containerProps, children }) {
 };
 
 render() {
-   const { value, suggestions, noSuggestions, isLoading } = this.state;
+   const { value, suggestions, noSuggestions, isLoading, results } = this.state;
    const inputProps = {
      placeholder: "Начните вводить код или название города",
      value,
@@ -164,12 +184,13 @@ render() {
       <div>
       <Autosuggest
           suggestions={suggestions}
+          renderSuggestionsContainer={this.renderSuggestionsContainer}
           onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
           onSuggestionsClearRequested={this.onSuggestionsClearRequested}
           getSuggestionValue={getSuggestionValue}
           renderSuggestion={renderSuggestion}
           inputProps={inputProps}
-          renderSuggestionsContainer={this.renderSuggestionsContainer}/>
+          />
         </div>
       );
   }

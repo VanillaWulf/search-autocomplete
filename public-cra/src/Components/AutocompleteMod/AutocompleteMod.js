@@ -65,12 +65,12 @@ loadSuggestions(value) {
   }, 1000);
 }
 
-  getSuggestions(value) {
+getSuggestions(value) {
    const escapedValue = escapeRegexCharacters(value.trim());
    if (escapedValue === '') {
      return [];
    }
-   console.log('autocomplete');
+
    const regex = new RegExp('^' + escapedValue, 'i');
 
    let searchResult = kladr.filter(kladr => regex.test(kladr.City));

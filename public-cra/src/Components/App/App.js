@@ -9,26 +9,19 @@ import AutocompleteModRouting from '../AutocompleteModRouting/AutocompleteModRou
 //var customData = require('../../testdata/kladr.json');
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state={
-      kladr: []
+      kladr: [],
+      arrayKladr: []
     };
     this.componentDidMount();
+    this.getKladrArray('ап');
     this.componentDidMount=this.componentDidMount.bind(this);
+    this.getKladrArray = this.getKladrArray.bind(this);
 }
 
-/* componentDidMount(){
-   return fetch('/kladr')
-   .then((response) => response.json())
-   .then((responseJson) => {
-     this.setState({
-       kladr: responseJson.messege
-     })
-   });
-   console.log(this.state.kladr);
-   console.log('get kladr');
- }*/
+ //woking fetch - uncomment
 
  componentDidMount(){
     return fetch('/kladr')
@@ -36,9 +29,13 @@ class App extends React.Component {
     .then(kladr =>this.setState({kladr}))
     };
 
+    getKladrArray(term){
+      return fetch(`/kladr/${term}`)
+      .then(res => res.json())
+      .then(arrayKladr => this.setState({arrayKladr}))
+      };
+
  render() {
-   console.log('get kladr');
-   console.log(this.state.kladr);
     return (
       <div>
         <AutocompleteMod />
