@@ -9,11 +9,6 @@ import GetKladr from '../../util/GetKladr.js';
 
 const kladr = customData;
 
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
-function escapeRegexCharacters(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
 //work with array
 function getSuggestionValue(suggestion) {
   return suggestion.City;
@@ -59,42 +54,22 @@ loadSuggestions(value) {
   });
 
   GetKladr.getKladrArray(value)
-   .then(results =>this.setState({results: results}));
+   .then(results =>this.setState({results}));
 
-  console.log('state of results '+ this.state.results);
-
-   this.setState({
-     isLoading: false,
-     suggestions: this.getSuggestions(this.state.results)
-   });
-
-  // Fake request
-  /*  this.lastRequestId = setTimeout(() => {
+  //Fake request
+    this.lastRequestId = setTimeout(() => {
     this.setState({
       isLoading: false,
       suggestions: this.getSuggestions(value),
     });
-  }, 1000);*/
+  }, 1000);
 };
 
   getSuggestions(value) {
-  /*const escapedValue = escapeRegexCharacters(value.trim());
-   if (escapedValue === '') {
-     return [];
-   }
 
-   const regex = new RegExp('^' + escapedValue, 'i');
+  let searchResult = this.state.results;
 
-   let searchResult = kladr.filter(kladr => regex.test(kladr.City));
-*/
-
-  console.log('state of results '+ this.state.results)
-
-  let searchResult = value;
-
-  console.log('searchResult: ' + searchResult);
-
-   if (searchResult.length>5)
+  if (searchResult.length>5)
     {
      this.setState({
        noSuggestions: false,
@@ -127,7 +102,6 @@ onChange = (event, { newValue, method }) => {
  onSuggestionsClearRequested = () => {
    this.setState({
      suggestions: [],
-     results: []
    });
  };
 

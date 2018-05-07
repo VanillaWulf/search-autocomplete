@@ -57,6 +57,16 @@ loadSuggestions(value) {
   });
 
   // Fake request
+
+  console.log(this.state.isLoading);
+
+  setTimeout(() => {
+  if(this.state.isLoading){
+    console.log('error');
+    console.log(this.state.isLoading);
+  };
+  }, 700);
+
     this.lastRequestId = setTimeout(() => {
     this.setState({
       isLoading: false,
