@@ -39,9 +39,9 @@ componentDidMount(){
  render() {
     return (
       <div>
-        <AutocompleteMod />
         <AutocompleteModRouting />
-      </div>
+        <AutocompleteMod />
+        </div>
       );
   }
 }

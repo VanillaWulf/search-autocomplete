@@ -1,13 +1,10 @@
+//component with routing to serv
+
 import React, { Component } from 'react';
-import customData from '../../testdata/kladr.json';
 import Autosuggest from 'react-autosuggest';
+import GetKladr from '../../util/GetKladr.js';
 
-const kladr = customData;
-
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
-function escapeRegexCharacters(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+//const kladr = customData;
 
 //work with array
 function getSuggestionValue(suggestion) {
@@ -22,16 +19,15 @@ function renderSuggestion(suggestion) {
   );
 }
 
-let failedFetch = false
-
 class TestComp extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
      value: '',
+     results:[],
      suggestions: [],
-     noSuggestions: true,
+     noSuggestions: false,
      isLoading: false,
      message:'',
      isServerError: false,
@@ -40,9 +36,10 @@ class TestComp extends React.Component {
 
    this.lastRequestId = null;
    this.getSuggestions = this.getSuggestions.bind(this);
-   this.renderSuggestionsContainer =           this.renderSuggestionsContainer.bind(this);
+   this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(this);
    this.refreshState = this.refreshState.bind(this);
-};
+
+   };
 
 
 loadSuggestions(value) {
@@ -51,57 +48,84 @@ loadSuggestions(value) {
     clearTimeout(this.lastRequestId);
   }
 
-  this.setState({
-    isLoading: true,
-    isServerError: false,
-    suggestions: [{}]
-  });
+  this.setState(() => ({
+    noSuggestions: true,
+    results: []
+  }));
 
-  console.log('failedFetch', failedFetch)
-  if (!failedFetch) {
-    failedFetch = true
-     setTimeout(() => {
-       console.log('fail the fetch once')
-       this.setState({
+  GetKladr.getKladrArray(value)
+   .then(results =>this.setState({results}));
+
+  setTimeout(() => {
+    if(this.state.noSuggestions){
+        console.log('start loading');
+        this.setState(() => ({
+        isLoading: true,
+        isServerError: false,
+        suggestions: [{}]
+      }));
+    };
+  }, 300);
+
+   setTimeout(() => {
+     console.log(this.state.results);
+     if(this.state.results.length===0){
+      console.log('render error');
+       this.setState(() => ({
          isLoading: false,
          isServerError: true,
          suggestions: [{}]
-       });
-      }, 1000);
-    return
-  }
+       }));
+       return;
+     }else{
+       this.setState(() => ({
+         isLoading: false,
+         suggestions: this.getSuggestions()
+        }))
+     };
+   }, 1000);
 
-   console.log('made it past fail');
+   /*GetKladr.getKladrArray(value)
+      .then(results =>this.setState({results}));
 
-  //set the error timeout
-
-
-  let delay = Math.random() * (1300 - 800) + 800;
-
-  //fake request for testing download and error
-  this.lastRequestId = setTimeout(() => {
-    this.setState(() => ({
+  //Fake request
+  /*  this.lastRequestId = setTimeout(() => {
+    this.setState({
       isLoading: false,
       suggestions: this.getSuggestions(value),
-    }));
-  }, delay);
-}
+    });
+  }, 1000);*/
 
-getSuggestions() {
-  const {
-    value,
-  } = this.state
-  console.log('value', value);
-   const escapedValue = escapeRegexCharacters(value.trim());
-   if (escapedValue === '') {
-     return [];
-   }
+};
 
-   const regex = new RegExp('^' + escapedValue, 'i');
+  getSuggestions() {
 
-   let searchResult = customData.filter(customData => regex.test(customData.City));
+  console.log(this.state.results);
 
-   return searchResult;
+  let searchResult = this.state.results;
+
+  if (searchResult.length>5)
+    {
+     this.setState(() => ({
+       noSuggestions: false,
+       noMatches: false,
+       message: `Показано 5 из ${searchResult.length} найденных городов. Уточните запрос,чтобы увидеть остальные`,
+     }));
+     return searchResult.splice(0,5);
+   } else if(searchResult.length===0){
+     this.setState(() => ({
+       noSuggestions: true,
+       noMatches: true
+     }));
+      return [{Id:'', City: ''}];
+    } else if(searchResult.length!=0 && searchResult.length<5){
+       this.setState(()=>({
+         noSuggestions: false,
+         noMatches: false,
+         message: ''
+       }));
+       return searchResult;
+     }
 }
 
 onChange = (event, { newValue, method }) => {
@@ -111,14 +135,9 @@ onChange = (event, { newValue, method }) => {
   }));
 };
 
-refreshState(value){
+refreshState(){
   console.log('refresh');
-  this.setState({
-    isLoading: true,
-    isServerError: false,
-    suggestions: [{}]
-  });
-  this.loadSuggestions(value);
+  this.loadSuggestions();
 };
 
  onSuggestionsFetchRequested = ({ value }) => {
@@ -128,8 +147,7 @@ refreshState(value){
  onSuggestionsClearRequested = () => {
    this.setState(() => ({
      suggestions: [],
-     isServerError: false
-    }));
+   }));
  };
 
 //customise component container
@@ -138,7 +156,7 @@ renderSuggestionsContainer  ({ containerProps, children }) {
     return(
       <div {...containerProps}>
        <div className="footer">
-         Download
+         Грузится
        </div>
        </div>
        );
@@ -146,20 +164,20 @@ renderSuggestionsContainer  ({ containerProps, children }) {
       return(
         <div {...containerProps}>
          <div className="footer">
-           ServerError
-           <button onClick={this.refreshState}>Refresh</button>
+           Ошибка
+            <button onClick={this.refreshState}>Обновить</button>
          </div>
          </div>
-         );
+       );//todo: make for onpressKey = enter
     }else if(this.state.noMatches){
     return(
       <div {...containerProps}>
        <div className=" footer">
-        No matches
+         Не найдено
        </div>
        </div>
        );
- }else {
+ }else{
     return(
       <div {...containerProps}>
       {children}
@@ -174,23 +192,23 @@ renderSuggestionsContainer  ({ containerProps, children }) {
 };
 
 render() {
-   const { value, suggestions, noSuggestions, isLoading, noMatches } = this.state;
+   const { value, suggestions, noSuggestions, isLoading, results, noMatches } = this.state;
    const inputProps = {
-     placeholder: "start enter",
+     placeholder: "Начните вводить код или название города",
      value,
      onChange: this.onChange
-  };
+   };
 
   return (
       <div>
       <Autosuggest
-          suggestions={customData}
+          suggestions={suggestions}
+          renderSuggestionsContainer={this.renderSuggestionsContainer}
           onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
           onSuggestionsClearRequested={this.onSuggestionsClearRequested}
           getSuggestionValue={getSuggestionValue}
           renderSuggestion={renderSuggestion}
           inputProps={inputProps}
-          renderSuggestionsContainer={this.renderSuggestionsContainer}
           />
         </div>
       );

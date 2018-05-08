@@ -1,9 +1,6 @@
 //component with routing to serv
 
 import React, { Component } from 'react';
-import theme from './AutocompleteModRouting.css';
-import Autocomplete from 'react-autocomplete';
-import customData from '../../testdata/kladr.json';
 import Autosuggest from 'react-autosuggest';
 import GetKladr from '../../util/GetKladr.js';
 
@@ -40,6 +37,7 @@ class AutocompleteModRouting extends React.Component {
    this.lastRequestId = null;
    this.getSuggestions = this.getSuggestions.bind(this);
    this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(this);
+   this.refreshState = this.refreshState.bind(this);
 
    };
 
@@ -51,13 +49,17 @@ loadSuggestions(value) {
   }
 
   this.setState(() => ({
-    noSuggestions: true
+    noSuggestions: true,
+    results: []
   }));
-  //
+
+  GetKladr.getKladrArray(value)
+   .then(results =>this.setState({results}));
+
   setTimeout(() => {
-    console.log('start loading');
     if(this.state.noSuggestions){
-      this.setState(() => ({
+        console.log('start loading');
+        this.setState(() => ({
         isLoading: true,
         isServerError: false,
         suggestions: [{}]
@@ -65,19 +67,26 @@ loadSuggestions(value) {
     };
   }, 300);
 
-  GetKladr.getKladrArray(value)
-   .then(results =>this.setState({results}));
+   setTimeout(() => {
+     if(this.state.results.length===0){
+      console.log('render error');
+       this.setState(() => ({
+         isLoading: false,
+         isServerError: true,
+         suggestions: [{}]
+       }));
+       return;
+     }else{
+       this.setState(() => ({
+         isLoading: false,
+         suggestions: this.getSuggestions()
+        }))
+     };
+   }, 1000);
 
-  //Fake request
-    this.lastRequestId = setTimeout(() => {
-    this.setState({
-      isLoading: false,
-      suggestions: this.getSuggestions(value),
-    });
-  }, 1000);
 };
 
-  getSuggestions(value) {
+  getSuggestions() {
 
   let searchResult = this.state.results;
 
@@ -92,7 +101,7 @@ loadSuggestions(value) {
    } else if(searchResult.length===0){
      this.setState(() => ({
        noSuggestions: true,
-       noMatches: false
+       noMatches: true
      }));
       return [{Id:'', City: ''}];
     } else if(searchResult.length!=0 && searchResult.length<5){
@@ -110,6 +119,11 @@ onChange = (event, { newValue, method }) => {
     value: newValue,
     noSuggestions: true
   }));
+};
+
+refreshState(){
+  console.log('refresh');
+  this.loadSuggestions();
 };
 
  onSuggestionsFetchRequested = ({ value }) => {

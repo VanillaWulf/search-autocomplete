@@ -1,4 +1,4 @@
-//component with testting error of connecting - add comments
+//component with testting error of connecting, todo: add comments
 
 import React, { Component } from 'react';
 import theme from './AutocompleteMod.css';
