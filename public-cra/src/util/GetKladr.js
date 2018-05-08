@@ -6,11 +6,6 @@ const GetKladr = {
     .then(res => {return res.json()})
   }
 
-  /*getKladrArray(term){
-    return
-      })
-  }*/
-
 };
 
 export default GetKladr;

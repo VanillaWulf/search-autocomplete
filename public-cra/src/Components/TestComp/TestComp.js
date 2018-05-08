@@ -1,7 +1,4 @@
-//component with testting error of connecting - add comments
-
 import React, { Component } from 'react';
-import theme from './AutocompleteMod.css';
 import customData from '../../testdata/kladr.json';
 import Autosuggest from 'react-autosuggest';
 
@@ -25,9 +22,9 @@ function renderSuggestion(suggestion) {
   );
 }
 
-let failedFetch = true;
+let failedFetch = false
 
-class AutocompleteMod extends React.Component {
+class TestComp extends React.Component {
   constructor(props) {
     super(props);
 
@@ -43,7 +40,7 @@ class AutocompleteMod extends React.Component {
 
    this.lastRequestId = null;
    this.getSuggestions = this.getSuggestions.bind(this);
-   this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(this);
+   this.renderSuggestionsContainer =           this.renderSuggestionsContainer.bind(this);
    this.refreshState = this.refreshState.bind(this);
 };
 
@@ -54,51 +51,47 @@ loadSuggestions(value) {
     clearTimeout(this.lastRequestId);
   }
 
-  this.setState(() => ({
-    noSuggestions: true
-  }));
+  this.setState({
+    isLoading: true,
+    isServerError: false,
+    suggestions: [{}]
+  });
 
-  // Fake request
+  console.log('failedFetch', failedFetch)
+  if (!failedFetch) {
+    failedFetch = true
+     setTimeout(() => {
+       console.log('fail the fetch once')
+       this.setState({
+         isLoading: false,
+         isServerError: true,
+         suggestions: [{}]
+       });
+      }, 1000);
+    return
+  }
 
-  setTimeout(() => {
-    console.log('start loading');
-    if(this.state.noSuggestions){
-      this.setState(() => ({
-        isLoading: true,
-        isServerError: false,
-        suggestions: [{}]
-      }));
-    };
-  }, 300);
+   console.log('made it past fail');
 
-  setTimeout(() => {
-    if(this.state.isLoading){
-      this.setState(() => ({
-        isServerError: true,
-        suggestions: [{}]
-      }));
-      return;
-    };
-  }, 1000);
+  //set the error timeout
+
 
   let delay = Math.random() * (1300 - 800) + 800;
-  console.log(delay);
 
-  //fakerequest for testing download and error
+  //fake request for testing download and error
   this.lastRequestId = setTimeout(() => {
-    this.setState({
+    this.setState(() => ({
       isLoading: false,
       suggestions: this.getSuggestions(value),
-    });
+    }));
   }, delay);
-
 }
 
 getSuggestions() {
   const {
     value,
-  } = this.state;
-
+  } = this.state
+  console.log('value', value);
    const escapedValue = escapeRegexCharacters(value.trim());
    if (escapedValue === '') {
      return [];
@@ -106,31 +99,9 @@ getSuggestions() {
 
    const regex = new RegExp('^' + escapedValue, 'i');
 
-   let searchResult = kladr.filter(kladr => regex.test(kladr.City));
+   let searchResult = customData.filter(customData => regex.test(customData.City));
 
-   if (searchResult.length>5)
-    {
-     this.setState(() => ({
-       noSuggestions: false,
-       noMatches: false,
-       message: `Показано 5 из ${searchResult.length} найденных городов. Уточните запрос,чтобы увидеть остальные`,
-     }));
-     return searchResult.splice(0,5);
-   } else if(searchResult.length===0){
-      this.setState(() => ({
-       noSuggestions: true,
-       noMatches: true
-     }));
-      return [{Id:'', City: ''}];
-    } else if(searchResult.length!==0 && searchResult.length<5){
-
-       this.setState(() => ({
-       noSuggestions: false,
-       noMatches: false,
-       message: ''
-      }));
-       return searchResult;
-     }
+   return searchResult;
 }
 
 onChange = (event, { newValue, method }) => {
@@ -140,9 +111,14 @@ onChange = (event, { newValue, method }) => {
   }));
 };
 
-refreshState(){
+refreshState(value){
   console.log('refresh');
-  this.loadSuggestions();
+  this.setState({
+    isLoading: true,
+    isServerError: false,
+    suggestions: [{}]
+  });
+  this.loadSuggestions(value);
 };
 
  onSuggestionsFetchRequested = ({ value }) => {
@@ -153,7 +129,7 @@ refreshState(){
    this.setState(() => ({
      suggestions: [],
      isServerError: false
-   }));
+    }));
  };
 
 //customise component container
@@ -162,7 +138,7 @@ renderSuggestionsContainer  ({ containerProps, children }) {
     return(
       <div {...containerProps}>
        <div className="footer">
-         Грузится
+         Download
        </div>
        </div>
        );
@@ -170,20 +146,20 @@ renderSuggestionsContainer  ({ containerProps, children }) {
       return(
         <div {...containerProps}>
          <div className="footer">
-           Ошибка
-           <button onClick={this.refreshState}>Обновить</button>
+           ServerError
+           <button onClick={this.refreshState}>Refresh</button>
          </div>
          </div>
-       );//todo: make for onpressKey = enter
+         );
     }else if(this.state.noMatches){
     return(
       <div {...containerProps}>
        <div className=" footer">
-         Не найдено
+        No matches
        </div>
        </div>
        );
- }else{
+ }else {
     return(
       <div {...containerProps}>
       {children}
@@ -200,7 +176,7 @@ renderSuggestionsContainer  ({ containerProps, children }) {
 render() {
    const { value, suggestions, noSuggestions, isLoading, noMatches } = this.state;
    const inputProps = {
-     placeholder: "Начните вводить код или название города",
+     placeholder: "start enter",
      value,
      onChange: this.onChange
   };
@@ -208,7 +184,7 @@ render() {
   return (
       <div>
       <Autosuggest
-          suggestions={suggestions}
+          suggestions={customData}
           onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
           onSuggestionsClearRequested={this.onSuggestionsClearRequested}
           getSuggestionValue={getSuggestionValue}
@@ -221,4 +197,4 @@ render() {
   }
 }
 
-export default AutocompleteMod;
+export default TestComp;

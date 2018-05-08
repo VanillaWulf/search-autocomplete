@@ -7,7 +7,7 @@ import customData from '../../testdata/kladr.json';
 import Autosuggest from 'react-autosuggest';
 import GetKladr from '../../util/GetKladr.js';
 
-const kladr = customData;
+//const kladr = customData;
 
 //work with array
 function getSuggestionValue(suggestion) {
@@ -31,9 +31,10 @@ class AutocompleteModRouting extends React.Component {
      results:[],
      suggestions: [],
      noSuggestions: false,
-     isLoadinig: false,
+     isLoading: false,
      message:'',
-     isServerError: false
+     isServerError: false,
+     noMatches: false
    };
 
    this.lastRequestId = null;
@@ -48,10 +49,21 @@ loadSuggestions(value) {
   if (this.lastRequestId !== null) {
     clearTimeout(this.lastRequestId);
   }
+
+  this.setState(() => ({
+    noSuggestions: true
+  }));
   //
-  this.setState({
-    isLoading: true,
-  });
+  setTimeout(() => {
+    console.log('start loading');
+    if(this.state.noSuggestions){
+      this.setState(() => ({
+        isLoading: true,
+        isServerError: false,
+        suggestions: [{}]
+      }));
+    };
+  }, 300);
 
   GetKladr.getKladrArray(value)
    .then(results =>this.setState({results}));
@@ -71,28 +83,33 @@ loadSuggestions(value) {
 
   if (searchResult.length>5)
     {
-     this.setState({
+     this.setState(() => ({
        noSuggestions: false,
+       noMatches: false,
        message: `Показано 5 из ${searchResult.length} найденных городов. Уточните запрос,чтобы увидеть остальные`,
-      });
+     }));
      return searchResult.splice(0,5);
    } else if(searchResult.length===0){
-     this.setState({
-       noSuggestions: true
-     });
+     this.setState(() => ({
+       noSuggestions: true,
+       noMatches: false
+     }));
       return [{Id:'', City: ''}];
     } else if(searchResult.length!=0 && searchResult.length<5){
-       this.setState({
-       message: ''
-       })
+       this.setState(()=>({
+         noSuggestions: false,
+         noMatches: false,
+         message: ''
+       }));
        return searchResult;
      }
 }
 
 onChange = (event, { newValue, method }) => {
-  this.setState({
-    value: newValue
-  });
+  this.setState(() => ({
+    value: newValue,
+    noSuggestions: true
+  }));
 };
 
  onSuggestionsFetchRequested = ({ value }) => {
@@ -100,9 +117,9 @@ onChange = (event, { newValue, method }) => {
  };
 
  onSuggestionsClearRequested = () => {
-   this.setState({
+   this.setState(() => ({
      suggestions: [],
-   });
+   }));
  };
 
 //customise component container
@@ -120,11 +137,11 @@ renderSuggestionsContainer  ({ containerProps, children }) {
         <div {...containerProps}>
          <div className="footer">
            Ошибка
-           <button>Обновить</button>
+            <button onClick={this.refreshState}>Обновить</button>
          </div>
          </div>
-         );
-    }else if(this.state.noSuggestions){
+       );//todo: make for onpressKey = enter
+    }else if(this.state.noMatches){
     return(
       <div {...containerProps}>
        <div className=" footer">
@@ -132,7 +149,7 @@ renderSuggestionsContainer  ({ containerProps, children }) {
        </div>
        </div>
        );
- }else if(!this.state.noSuggestions){
+ }else{
     return(
       <div {...containerProps}>
       {children}
@@ -147,7 +164,7 @@ renderSuggestionsContainer  ({ containerProps, children }) {
 };
 
 render() {
-   const { value, suggestions, noSuggestions, isLoading, results } = this.state;
+   const { value, suggestions, noSuggestions, isLoading, results, noMatches } = this.state;
    const inputProps = {
      placeholder: "Начните вводить код или название города",
      value,

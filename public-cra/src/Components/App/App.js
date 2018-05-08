@@ -6,6 +6,7 @@ import Autosuggest from 'react-autosuggest';
 //import ComboboxNonB from '../ComboboxNonB/ComboboxNonB.js'
 import AutocompleteMod from '../AutocompleteMod/AutocompleteMod.js'
 import AutocompleteModRouting from '../AutocompleteModRouting/AutocompleteModRouting.js'
+import TestComp from '../TestComp/TestComp.js'
 //var customData = require('../../testdata/kladr.json');
 
 class App extends React.Component {
@@ -23,7 +24,7 @@ class App extends React.Component {
 
  //woking fetch - uncomment
 
- componentDidMount(){
+componentDidMount(){
     return fetch('/kladr')
     .then(res => res.json())
     .then(kladr =>this.setState({kladr}))
