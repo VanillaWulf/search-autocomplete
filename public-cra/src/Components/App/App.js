@@ -16,15 +16,15 @@ class App extends React.Component {
       kladr: [],
       arrayKladr: []
     };
-    this.componentDidMount();
+    /*this.componentDidMount();
     this.getKladrArray('ап');
     this.componentDidMount=this.componentDidMount.bind(this);
-    this.getKladrArray = this.getKladrArray.bind(this);
+    this.getKladrArray = this.getKladrArray.bind(this);*/
 }
 
  //woking fetch - uncomment
 
-componentDidMount(){
+/*componentDidMount(){
     return fetch('/kladr')
     .then(res => res.json())
     .then(kladr =>this.setState({kladr}))
@@ -35,10 +35,14 @@ componentDidMount(){
       .then(res => res.json())
       .then(arrayKladr => this.setState({arrayKladr}))
       };
-
+*/
  render() {
     return (
       <div>
+      <TestComp
+      items={['apple', 'orange', 'carrot']}
+      onChange={selectedItem => console.log(selectedItem)}
+      />
         <AutocompleteModRouting />
         <AutocompleteMod />
         </div>

@@ -25,8 +25,6 @@ function renderSuggestion(suggestion) {
   );
 }
 
-let failedFetch = true;
-
 class AutocompleteMod extends React.Component {
   constructor(props) {
     super(props);
