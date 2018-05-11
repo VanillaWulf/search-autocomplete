@@ -39,10 +39,7 @@ class App extends React.Component {
  render() {
     return (
       <div>
-      <TestComp
-      items={['apple', 'orange', 'carrot']}
-      onChange={selectedItem => console.log(selectedItem)}
-      />
+      <TestComp />
         <AutocompleteModRouting />
         <AutocompleteMod />
         </div>

@@ -119,23 +119,20 @@ class TestComp extends React.Component {
           isLoading: false,
           noMatches: false,
           isServerError: false,
-          value: ''
           };
   handleStateChange = (changes, downshiftState) => {
     if (changes.hasOwnProperty('inputValue')) {
-      this.getItems(changes.inputValue);
-      /*this.setState({
-        items: this.getItems(changes.inputValue)})*/
+      this.setState({
+        items: this.getItems(changes.inputValue)});
     }
     // handle stuff here if you need to
     // this is especially useful if you need
     // to controll some of the internal state yourself
   }
   handleChange = (selectedItem, downshiftState) => {
-    this.getItems(this.state.value);
-  /*  this.setState({
-      items: this.getItems(value)})
-    // handle the new selectedItem here*/
+    this.setState({
+      items: this.allItems})
+    // handle the new selectedItem here
   }
 
   loadItems(value) {
@@ -155,9 +152,9 @@ class TestComp extends React.Component {
       clearTimeout(this.lastRequestId);
     }
 
-    /*this.setState(() => ({
+    this.setState(() => ({
       allItems: null
-    }));*/
+    }));
 
     // Fake request
 
@@ -169,7 +166,7 @@ class TestComp extends React.Component {
           isServerError: false,
         }));
       };
-    }, 100);
+    }, 300);
 
   /*  setTimeout(() => {
       if(this.state.isLoading){
@@ -187,22 +184,19 @@ class TestComp extends React.Component {
     this.lastRequestId = setTimeout(() => {
       this.setState({
         isLoading: false,
-        items: this.parseItems(kladr.filter(kladr => regex.test(kladr.City)))
         });
-      }, delay);
+        console.log('kladr request '+kladr.filter(kladr => regex.test(kladr.City)));
+        return kladr.filter(kladr => regex.test(kladr.City));
+    }, delay);
   };
 
   parseItems(value){
 
-    let searchResult = value;
-
     console.log('searchResult '+searchResult);
 
-    console.log('value' + value);
-    console.log(this.items)
-    console.log(typeof(searchResult));
-    //SeacrhResulst - объект, а не строка
-     if(this.items===undefined){
+    let searchResult = this.loadItems(value);
+
+     if(searchResult===null){
              this.setState(() => ({
               noSuggestions: true,
               noMatches: true
@@ -214,13 +208,16 @@ class TestComp extends React.Component {
               noMatches: false,
               message: ''
              }));
-              return value;
+              return searchResult;
             }
+      this.setState({
+        items: searchResult
+      })
   }
 
   async getItems(value){
     await this.loadItems(value);
-    //await this.parseItems(value);
+    await this.parseItems(value);
 
   }
   itemToString(i) {
@@ -248,7 +245,6 @@ class TestComp extends React.Component {
           noMatches={this.state.noMatches}
           isLoading={this.state.isLoading}
           message={this.state.message}
-          value={this.state.value}
         />
       </Div>
     )

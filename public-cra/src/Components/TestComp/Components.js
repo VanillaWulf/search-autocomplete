@@ -79,7 +79,7 @@ const Label = glamorous.label({
 })
 
 const Menu = glamorous.div({
-  maxHeight: '20rem',
+  maxHeight: '15rem',
   overflowY: 'auto',
   overflowX: 'hidden',
   borderTopWidth: '0',
@@ -92,6 +92,7 @@ const Menu = glamorous.div({
   borderBottomWidth: 1,
   borderLeftWidth: 1,
   borderStyle: 'solid',
+  position: 'absolute'
 })
 
 const ControllerButton = glamorous.button({
@@ -107,6 +108,16 @@ const ControllerButton = glamorous.button({
   height: '100%',
   justifyContent: 'center',
   alignItems: 'center',
+})
+
+const Error = glamorous.div({
+  padding: '.75rem 1.25rem',
+  marginBottom: '1rem',
+  border: '1px solid transparent',
+  borderRadius: '.25rem',
+  backgroundColor: '#f2dede',
+  borderColor: '#ebcccc',
+  color: '#a94442',
 })
 
 function ArrowIcon({isOpen}) {
@@ -141,4 +152,4 @@ function XIcon() {
   )
 }
 
-export {Menu, ControllerButton, Input, Item, ArrowIcon, XIcon, Label}
+export {Menu, ControllerButton, Input, Item, ArrowIcon, XIcon, Error, Label}

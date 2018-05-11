@@ -86,6 +86,8 @@ loadSuggestions(value) {
 
 };
 
+
+//вообще надо другое имя этой функции сделать, возвращает массив с результатами getItems, например
   getSuggestions() {
 
   let searchResult = this.state.results;
