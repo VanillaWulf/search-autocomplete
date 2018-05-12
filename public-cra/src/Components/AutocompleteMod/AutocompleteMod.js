@@ -1,7 +1,7 @@
 //component with testting error of connecting, todo: add comments
 
 import React, { Component } from 'react';
-import theme from './AutocompleteMod.css';
+import './AutocompleteMod.css';
 import customData from '../../testdata/kladr.json';
 import Autosuggest from 'react-autosuggest';
 
@@ -67,7 +67,7 @@ loadSuggestions(value) {
         suggestions: [{}]
       }));
     };
-  }, 300);
+  }, 500);
 
   setTimeout(() => {
     if(this.state.isLoading){
@@ -79,7 +79,7 @@ loadSuggestions(value) {
     };
   }, 1000);
 
-  let delay = Math.random() * (1300 - 800) + 800;
+  let delay = Math.random() * (1500 - 500) + 500;
   console.log(delay);
 
   //fakerequest for testing download and error
@@ -95,7 +95,7 @@ loadSuggestions(value) {
 getSuggestions() {
   const {
     value,
-  } = this.state;
+    } = this.state;
 
    const escapedValue = escapeRegexCharacters(value.trim());
    if (escapedValue === '') {
@@ -111,7 +111,7 @@ getSuggestions() {
      this.setState(() => ({
        noSuggestions: false,
        noMatches: false,
-       message: `Показано 5 из ${searchResult.length} найденных городов. Уточните запрос,чтобы увидеть остальные`,
+       message: `Показано 5 из ${searchResult.length} найденных городов. Уточните запрос, чтобы увидеть остальные`,
      }));
      return searchResult.splice(0,5);
    } else if(searchResult.length===0){
@@ -159,24 +159,24 @@ renderSuggestionsContainer  ({ containerProps, children }) {
   if(this.state.isLoading){
     return(
       <div {...containerProps}>
-       <div className="footer">
-         Грузится
+       <div className="footer react-autosuggest__advice react-autosuggest__advice--loader">
+         Загрузка
        </div>
        </div>
        );
   }else if(this.state.isServerError){
       return(
         <div {...containerProps}>
-         <div className="footer">
-           Ошибка
-           <button onClick={this.refreshState}>Обновить</button>
+         <div className="footer react-autosuggest__advice react-autosuggest__advice--server-error">
+           Что-то пошло не так. Проверьте соединение с интернетом и попробуйте еще раз <br />
+           <button className="react-autosuggest__advice__refresh-button" onClick={this.refreshState}>Обновить</button>
          </div>
          </div>
        );//todo: make for onpressKey = enter
     }else if(this.state.noMatches){
     return(
       <div {...containerProps}>
-       <div className=" footer">
+       <div className="footer react-autosuggest__advice">
          Не найдено
        </div>
        </div>
@@ -186,7 +186,7 @@ renderSuggestionsContainer  ({ containerProps, children }) {
       <div {...containerProps}>
       {children}
       {
-        <div className="footer">
+        <div className="footer react-autosuggest__advice react-autosuggest__advice--small">
           {this.state.message}
           </div>
       }
@@ -198,7 +198,7 @@ renderSuggestionsContainer  ({ containerProps, children }) {
 render() {
    const { value, suggestions, noSuggestions, isLoading, noMatches } = this.state;
    const inputProps = {
-     placeholder: "Начните вводить код или название города",
+     placeholder: "Начните вводить код или название",
      value,
      onChange: this.onChange
   };

@@ -1,9 +1,10 @@
-//component with routing to serv
+//component with routing to serv + using custon theme
 
 import React, { Component } from 'react';
 import Autosuggest from 'react-autosuggest';
 import GetKladr from '../../util/GetKladr.js';
-
+import '../AutocompleteMod/AutocompleteMod.css';
+//import theme from './AutocompleteModRouting.css';
 //const kladr = customData;
 
 //work with array
@@ -65,7 +66,7 @@ loadSuggestions(value) {
         suggestions: [{}]
       }));
     };
-  }, 300);
+  }, 500);
 
    setTimeout(() => {
      if(this.state.results.length===0){
@@ -143,24 +144,24 @@ renderSuggestionsContainer  ({ containerProps, children }) {
   if(this.state.isLoading){
     return(
       <div {...containerProps}>
-       <div className="footer">
-         Грузится
+       <div className="footer react-autosuggest__advice react-autosuggest__advice--loader">
+         Загрузка
        </div>
        </div>
        );
   }else if(this.state.isServerError){
       return(
         <div {...containerProps}>
-         <div className="footer">
-           Ошибка
-            <button onClick={this.refreshState}>Обновить</button>
+         <div className="footer react-autosuggest__advice react-autosuggest__advice--server-error">
+           Что-то пошло не так. Проверьте соединение с интернетом и попробуйте еще раз <br />
+           <button className="react-autosuggest__advice__refresh-button" onClick={this.refreshState}>Обновить</button>
          </div>
          </div>
        );//todo: make for onpressKey = enter
     }else if(this.state.noMatches){
     return(
       <div {...containerProps}>
-       <div className=" footer">
+       <div className="footer react-autosuggest__advice">
          Не найдено
        </div>
        </div>
@@ -170,7 +171,7 @@ renderSuggestionsContainer  ({ containerProps, children }) {
       <div {...containerProps}>
       {children}
       {
-        <div className="footer">
+        <div className="footer react-autosuggest__advice react-autosuggest__advice--small">
           {this.state.message}
           </div>
       }
@@ -179,10 +180,11 @@ renderSuggestionsContainer  ({ containerProps, children }) {
   }
 };
 
+
 render() {
    const { value, suggestions, noSuggestions, isLoading, results, noMatches } = this.state;
    const inputProps = {
-     placeholder: "Начните вводить код или название города",
+     placeholder: "Начните вводить код или название",
      value,
      onChange: this.onChange
    };

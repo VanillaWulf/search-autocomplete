@@ -7,6 +7,7 @@ import Autosuggest from 'react-autosuggest';
 import AutocompleteMod from '../AutocompleteMod/AutocompleteMod.js'
 import AutocompleteModRouting from '../AutocompleteModRouting/AutocompleteModRouting.js'
 import TestComp from '../TestComp/TestComp.js'
+import MenuHeader from '../MenuHeader/MenuHeader.js'
 //var customData = require('../../testdata/kladr.json');
 
 class App extends React.Component {
@@ -38,9 +39,11 @@ class App extends React.Component {
 */
  render() {
     return (
-      <div>
-      <TestComp />
+      <div className="wrapper">
+        <TestComp />
+        <MenuHeader/>
         <AutocompleteModRouting />
+        <MenuHeader />
         <AutocompleteMod />
         </div>
       );

@@ -7,7 +7,7 @@ class MenuHeader extends Component{
 }
   render(){
     return (
-      <p>Город</p>
+      <h2 className="menu-header">Город</h2>
     )
   };
 }

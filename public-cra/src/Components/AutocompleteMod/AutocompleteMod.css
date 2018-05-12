@@ -1,22 +1,29 @@
 .react-autosuggest__container {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #404040;
+  line-height: 20px;
+
   position: relative;
-  margin-top: 150px;
-  margin-left: 150px;
+  margin-top: 0px;
+  margin-bottom: 50px;
 }
 
 .react-autosuggest__input {
-  width: 240px;
-  height: 30px;
-  padding: 10px 20px;
-  font-family: Helvetica, sans-serif;
-  font-weight: 300;
-  font-size: 30px;
+  width: 280px;
+  height: 40px;
+  padding: 5px 10px;
+  box-sizing: border-box;
   border: 1px solid #aaa;
-  border-radius: 4px;
 }
 
 .react-autosuggest__input--focused {
-  outline: none;
+  outline: 2px solid #81b3d2;
+}
+
+.react-autosuggest__input--focused::placeholder{
+  opacity: 0.6;
 }
 
 .react-autosuggest__input--open {
@@ -31,15 +38,12 @@
 .react-autosuggest__suggestions-container--open {
   display: block;
   position: absolute;
-  top: 51px;
-  width: 280px;
+  top: 39px;
+  width: 320px;
   border: 1px solid #aaa;
   background-color: #fff;
-  font-family: Helvetica, sans-serif;
-  font-weight: 300;
-  font-size: 16px;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
+  font: inherit;
+  box-shadow: 0px 2px 8px 0px rgba(122,121,122);
   z-index: 2;
 }
 
@@ -55,5 +59,60 @@
 }
 
 .react-autosuggest__suggestion--highlighted {
-  background-color: #ddd;
+  background-color: #81b3d2;
+}
+
+.react-autosuggest__advice{
+  font: inherit;
+  color: #aaa;
+  box-sizing: border-box;
+  padding: 5px 10px;
+}
+
+.react-autosuggest__advice--small{
+  font: inherit;
+}
+
+.react-autosuggest__advice--loader{
+  padding-left: 35px;
+  position: relative;
+}
+
+.react-autosuggest__advice--loader::before{
+  border-top: 1px solid #aaa;;
+  border-radius: 50%;
+  position: absolute;
+  top:8px;
+  left: 15px;
+  content: '';
+  width: 15px;
+  height: 15px;
+  animation: spin 0.8s linear infinite;
+  z-index: 2;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.react-autosuggest__advice--server-error{
+  padding-bottom: 0px;
+}
+
+.react-autosuggest__advice__refresh-button{
+    background: none;
+    border: none;
+    width: 320px;
+    height: 35px;
+    text-align: left;
+    margin-left: -10px;
+    padding-left: 10px;
+    margin-bottom: 0px;
+}
+
+.react-autosuggest__advice__refresh-button:hover{
+  background-color: #81b3d2;
+  cursor: pointer;
+  color: #ffffff;
 }

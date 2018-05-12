@@ -10,8 +10,7 @@ import Downshift from 'downshift';
 import {render} from 'react-dom';
 import glamorous, {Div} from 'glamorous';
 import {css} from 'glamor';
-import matchSorter from 'match-sorter';
-import starWarsNames from 'starwars-names';
+
 import {
   Label,
   Menu,
@@ -30,11 +29,12 @@ function escapeRegexCharacters(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
-function ExampleDownshift({itemToString, items, error, noMatches, isLoading, isServerError, message, ...rest}) {
+function ExampleDownshift({itemToString, items, error, noMatches, isLoading, isServerError, message, value,refreshState,  ...rest}) {
 
   return (
     <Downshift
       itemToString={itemToString}
+      refreshState={refreshState}
       {...rest}
       render={({
         getLabelProps,
@@ -48,47 +48,31 @@ function ExampleDownshift({itemToString, items, error, noMatches, isLoading, isS
         inputValue,
         highlightedIndex,
       }) => (
-        <div className={css({width: 250, margin: 'auto'})}>
+        <div className={css({
+          fontFamily: "'Segoe UI', sans-serif",
+          fontSize: "14px",
+          fontWeight: "300",
+          color: "#404040",
+          lineHeight: "20px",
+          width: 320,
+          zIndex:'2'
+          })}>
           <Label {...getLabelProps()}>City</Label>
           <Div position="relative">
             <Input
               {...getInputProps({
                 isOpen,
-                placeholder: 'Enter a name',
+                placeholder: 'Начните вводить код или название',
 
               })}
             />
-            {selectedItem ? (
-              <ControllerButton
-                onClick={clearSelection}
-                aria-lab10el="clear selection"
-              >
-                <XIcon />
-              </ControllerButton>
-            ) : (
-              <ControllerButton {...getButtonProps()}>
+            <ControllerButton {...getButtonProps()}>
                 <ArrowIcon isOpen={isOpen} />
               </ControllerButton>
-            )}
           </Div>
           {! isOpen ? null : (
             <Menu>
-              {noMatches
-                ? <div css={{marginTop: 20}}>
-                    No matches
-                  </div>
-                : null}
-                {isLoading
-                  ? <div css={{marginTop: 20}}>
-                      Loading
-                    </div>
-                  : null}
-                  {isServerError
-                    ? <div css={{marginTop: 20}}>
-                        error <button>reload</button>
-                      </div>
-                    : null}
-                    {! items ? null : ( items.map((item, index) => (
+                {! items ? null : ( items.map((item, index) => (
                         <Item
                           key={item.Id}
                           {...getItemProps({
@@ -102,6 +86,21 @@ function ExampleDownshift({itemToString, items, error, noMatches, isLoading, isS
                         </Item>
                       )))
                     }
+                    {noMatches
+                      ? <error css={{marginTop: 20}}>
+                          Не найдено
+                        </error>
+                      : null}
+                      {isLoading
+                        ? <div css={{marginTop: 20}}>
+                            Загрузка
+                          </div>
+                        : null}
+                        {isServerError
+                          ? <div css={{marginTop: 20}}>
+                              Ошибка сервера <button onClick={refreshState}>reload</button>
+                            </div>
+                        : null}
             </Menu>
           )}
         </div>
@@ -121,9 +120,13 @@ class TestComp extends React.Component {
           isServerError: false,
           value: ''
           };
+
   handleStateChange = (changes, downshiftState) => {
     if (changes.hasOwnProperty('inputValue')) {
-      this.getItems(changes.inputValue);
+      this.loadItems(changes.inputValue);
+      this.setState({
+        value: changes.inputValue
+      })
       /*this.setState({
         items: this.getItems(changes.inputValue)})*/
     }
@@ -131,12 +134,12 @@ class TestComp extends React.Component {
     // this is especially useful if you need
     // to controll some of the internal state yourself
   }
-  handleChange = (selectedItem, downshiftState) => {
-    this.getItems(this.state.value);
+  /*handleChange = (selectedItem, downshiftState) => {
+    this.loadItems(this.state.value);
   /*  this.setState({
       items: this.getItems(value)})
     // handle the new selectedItem here*/
-  }
+  //  }
 
   loadItems(value) {
 
@@ -155,9 +158,9 @@ class TestComp extends React.Component {
       clearTimeout(this.lastRequestId);
     }
 
-    /*this.setState(() => ({
-      allItems: null
-    }));*/
+    this.setState(() => ({
+      noMatches: false
+    }));
 
     // Fake request
 
@@ -167,77 +170,79 @@ class TestComp extends React.Component {
         this.setState(() => ({
           isLoading: true,
           isServerError: false,
-        }));
+          }));
       };
-    }, 100);
+    }, 500);
 
-  /*  setTimeout(() => {
+  setTimeout(() => {
       if(this.state.isLoading){
+        console.log('render error');
         this.setState(() => ({
           isServerError: true,
+          isLoading: false
         }));
-        return null;
-      };
-    }, 1000);*/
+        return;};
+    }, 1000);
 
     let delay = Math.random() * (1300 - 800) + 800;
     console.log(delay);
 
     //fakerequest for testing download and error
     this.lastRequestId = setTimeout(() => {
+      console.log('render matches');
+      console.log(this.isServerError);
+      if(this.state.isServerError===false){
+      console.log('set the state')
       this.setState({
         isLoading: false,
-        items: this.parseItems(kladr.filter(kladr => regex.test(kladr.City)))
+        items: kladr.filter(kladr => regex.test(kladr.City)),
+        NoMatches: this.parseNoMatches(kladr.filter(kladr => regex.test(kladr.City)))
         });
-      }, delay);
+      }
+    }, delay);
+
   };
 
-  parseItems(value){
 
-    let searchResult = value;
+  parseNoMatches(value){
 
-    console.log('searchResult '+searchResult);
-
-    console.log('value' + value);
-    console.log(this.items)
-    console.log(typeof(searchResult));
-    //SeacrhResulst - объект, а не строка
-     if(this.items===undefined){
+    if(value.length==0){
              this.setState(() => ({
               noSuggestions: true,
               noMatches: true
             }));
-             return null;
+             return true;
            } else {
               this.setState(() => ({
               noSuggestions: false,
               noMatches: false,
               message: ''
              }));
-              return value;
+              return false;
             }
   }
 
-  async getItems(value){
-    await this.loadItems(value);
-    //await this.parseItems(value);
-
-  }
   itemToString(i) {
     return i ? i.City : ''
   }
+
+  refreshState(){
+   console.log(this.state.value);
+   console.log('refreshing');
+   this.loadItems('f');
+  }
+
   render() {
 //    let {error}=this.state;
     return (
       <Div
         css={{
           display: 'flex',
-          justifyContent: 'center',
+
           flexDirection: 'column',
-          textAlign: 'center',
+
         }}
       >
-        <h2>basic example</h2>
         <ExampleDownshift
           onStateChange={this.handleStateChange}
           onChange={this.handleChange}
@@ -249,6 +254,8 @@ class TestComp extends React.Component {
           isLoading={this.state.isLoading}
           message={this.state.message}
           value={this.state.value}
+          isServerError={this.state.isServerError}
+          refreshState={this.refreshState}
         />
       </Div>
     )

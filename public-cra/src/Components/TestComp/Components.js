@@ -7,58 +7,40 @@ const Item = glamorous.div(
     cursor: 'pointer',
     display: 'block',
     border: 'none',
-    height: 'auto',
     textAlign: 'left',
+    minHeight:'20px',
+    padding:'10px 10px',
     borderTop: 'none',
-    lineHeight: '1em',
-    color: 'rgba(0,0,0,.87)',
-    fontSize: '1rem',
-    textTransform: 'none',
-    fontWeight: '400',
-    boxShadow: 'none',
-    padding: '.8rem 1.1rem',
-    whiteSpace: 'normal',
-    wordWrap: 'normal',
-  },
+    font:'inherit',
+    },
   ({isActive, isSelected}) => {
     const styles = []
     if (isActive) {
       styles.push({
         color: 'rgba(0,0,0,.95)',
-        background: 'rgba(0,0,0,.03)',
+        background: '#81b3d2',
       })
     }
-    if (isSelected) {
-      styles.push({
-        color: 'rgba(0,0,0,.95)',
-        fontWeight: '700',
-      })
-    }
+
     return styles
   },
 )
-const onAttention = '&:hover, &:focus'
+const onAttention = '&:active, &:focus'
 const Input = glamorous.input(
   {
-    width: '100%', // full width - icon width/2 - border
-    fontSize: 14,
-    wordWrap: 'break-word',
-    lineHeight: '1em',
-    outline: 0,
-    whiteSpace: 'normal',
-    minHeight: '2em',
-    background: '#fff',
-    display: 'inline-block',
-    padding: '1em 2em 1em 1em',
-    color: 'rgba(0,0,0,.87)',
-    boxShadow: 'none',
-    border: '1px solid rgba(34,36,38,.15)',
-    borderRadius: '.30rem',
+    width: '280px', // full width - icon width/2 - border
+    height: '40px',
+    padding: '5px 10px',
+    boxSizing: 'border-box',
+    border: '1px solid #aaa',
     transition: 'box-shadow .1s ease,width .1s ease',
     [onAttention]: {
-      borderColor: '#96c8da',
-      boxShadow: '0 2px 3px 0 rgba(34,36,38,.15)',
+      outline: '2px solid #81b3d2',
     },
+
+    ['&:focus::placeholder']:{
+      opacity: '0.6'
+    }
   },
   ({isOpen}) =>
     isOpen
@@ -72,6 +54,8 @@ const Input = glamorous.input(
       : null,
 )
 
+
+
 const Label = glamorous.label({
   fontWeight: 'bold',
   display: 'block',
@@ -79,20 +63,22 @@ const Label = glamorous.label({
 })
 
 const Menu = glamorous.div({
-  maxHeight: '15rem',
+  maxHeight: '350px',
+  font:'inherit',
   overflowY: 'auto',
   overflowX: 'hidden',
   borderTopWidth: '0',
   outline: '0',
   borderRadius: '0 0 .28571429rem .28571429rem',
   transition: 'opacity .1s ease',
-  boxShadow: '0 2px 3px 0 rgba(34,36,38,.15)',
-  borderColor: '#96c8da',
+  boxShadow: '0px 2px 8px 0px rgba(122,121,122)',
+  border: '1px solid #aaa',
   borderRightWidth: 1,
   borderBottomWidth: 1,
   borderLeftWidth: 1,
   borderStyle: 'solid',
-  position: 'absolute'
+  position: 'absolute',
+  backgroundColor:'white'
 })
 
 const ControllerButton = glamorous.button({
@@ -108,17 +94,20 @@ const ControllerButton = glamorous.button({
   height: '100%',
   justifyContent: 'center',
   alignItems: 'center',
+
 })
 
 const Error = glamorous.div({
+  font:'inherit',
+  color: '#aaa',
   padding: '.75rem 1.25rem',
   marginBottom: '1rem',
   border: '1px solid transparent',
   borderRadius: '.25rem',
   backgroundColor: '#f2dede',
   borderColor: '#ebcccc',
-  color: '#a94442',
 })
+
 
 function ArrowIcon({isOpen}) {
   return (
@@ -136,20 +125,4 @@ function ArrowIcon({isOpen}) {
   )
 }
 
-function XIcon() {
-  return (
-    <svg
-      viewBox="0 0 20 20"
-      preserveAspectRatio="none"
-      width={12}
-      fill="transparent"
-      stroke="#979797"
-      strokeWidth="1.1px"
-    >
-      <path d="M1,1 L19,19" />
-      <path d="M19,1 L1,19" />
-    </svg>
-  )
-}
-
-export {Menu, ControllerButton, Input, Item, ArrowIcon, XIcon, Error, Label}
+export {Menu, ControllerButton, Input, Item, ArrowIcon, Error, Label}
