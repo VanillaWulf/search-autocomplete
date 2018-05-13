@@ -25,7 +25,7 @@ const Item = glamorous.div(
     return styles
   },
 )
-const onAttention = '&:active, &:focus'
+const onAttention = '&:active, &:focus';
 const Input = glamorous.input(
   {
     width: '280px', // full width - icon width/2 - border

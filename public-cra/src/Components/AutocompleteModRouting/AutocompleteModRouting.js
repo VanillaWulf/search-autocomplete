@@ -1,6 +1,6 @@
 //component with routing to serv + using custon theme
 
-import React, { Component } from 'react';
+import React from 'react';
 import Autosuggest from 'react-autosuggest';
 import GetKladr from '../../util/GetKladr.js';
 import '../AutocompleteMod/AutocompleteMod.css';
@@ -107,7 +107,7 @@ loadSuggestions(value) {
        noMatches: true
      }));
       return [{Id:'', City: ''}];
-    } else if(searchResult.length!=0 && searchResult.length<5){
+    } else if(searchResult.length!==0 && searchResult.length<5){
        this.setState(()=>({
          noSuggestions: false,
          noMatches: false,
@@ -182,7 +182,7 @@ renderSuggestionsContainer  ({ containerProps, children }) {
 
 
 render() {
-   const { value, suggestions, noSuggestions, isLoading, results, noMatches } = this.state;
+   const { value, suggestions } = this.state;
    const inputProps = {
      placeholder: "Начните вводить код или название",
      value,

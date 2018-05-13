@@ -1,8 +1,5 @@
-import React, { Component } from 'react';
-import logo from '../../logo.svg';
+import React from 'react';
 import './App.css';
-import Autocomplete from 'react-autocomplete';
-import Autosuggest from 'react-autosuggest';
 //import ComboboxNonB from '../ComboboxNonB/ComboboxNonB.js'
 import AutocompleteMod from '../AutocompleteMod/AutocompleteMod.js'
 import AutocompleteModRouting from '../AutocompleteModRouting/AutocompleteModRouting.js'

@@ -62,7 +62,7 @@ function ExampleDownshift({itemToString, items, error, noMatches, isLoading, isS
             <Input
               {...getInputProps({
                 isOpen,
-                placeholder: 'Начните вводить код или название',
+                placeholder: 'Введите или выберите из списка',
 
               })}
             />
@@ -85,6 +85,7 @@ function ExampleDownshift({itemToString, items, error, noMatches, isLoading, isS
                           {itemToString(item)}
                         </Item>
                       )))
+
                     }
                     {noMatches
                       ? <error css={{marginTop: 20}}>
@@ -120,6 +121,12 @@ class TestComp extends React.Component {
           isServerError: false,
           value: ''
           };
+
+  constructor(props){
+    super(props);
+    this.refreshState= this.refreshState.bind (this);
+  }
+
 
   handleStateChange = (changes, downshiftState) => {
     if (changes.hasOwnProperty('inputValue')) {
@@ -179,7 +186,8 @@ class TestComp extends React.Component {
         console.log('render error');
         this.setState(() => ({
           isServerError: true,
-          isLoading: false
+          isLoading: false,
+          items: null
         }));
         return;};
     }, 1000);
@@ -191,7 +199,7 @@ class TestComp extends React.Component {
     this.lastRequestId = setTimeout(() => {
       console.log('render matches');
       console.log(this.isServerError);
-      if(this.state.isServerError===false){
+      if(!this.state.isServerError){
       console.log('set the state')
       this.setState({
         isLoading: false,
@@ -227,9 +235,8 @@ class TestComp extends React.Component {
   }
 
   refreshState(){
-   console.log(this.state.value);
-   console.log('refreshing');
-   this.loadItems('f');
+   console.log('Start refresh with ' + this.state.value);
+   this.loadItems(this.state.value);
   }
 
   render() {
@@ -238,9 +245,7 @@ class TestComp extends React.Component {
       <Div
         css={{
           display: 'flex',
-
           flexDirection: 'column',
-
         }}
       >
         <ExampleDownshift
@@ -250,12 +255,12 @@ class TestComp extends React.Component {
           itemToString={this.itemToString}
           noMatches={this.state.noMatches}
           error={this.state.error}
-          noMatches={this.state.noMatches}
           isLoading={this.state.isLoading}
           message={this.state.message}
           value={this.state.value}
           isServerError={this.state.isServerError}
           refreshState={this.refreshState}
+          defaultHighlightedIndex={0}
         />
       </Div>
     )

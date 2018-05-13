@@ -1,6 +1,6 @@
 //component with testting error of connecting, todo: add comments
 
-import React, { Component } from 'react';
+import React from 'react';
 import './AutocompleteMod.css';
 import customData from '../../testdata/kladr.json';
 import Autosuggest from 'react-autosuggest';
@@ -71,11 +71,14 @@ loadSuggestions(value) {
 
   setTimeout(() => {
     if(this.state.isLoading){
+      console.log(`serverErrorCheck`);
       this.setState(() => ({
+        isLoading: false,
         isServerError: true,
-        suggestions: [{}]
+        suggestions: [{Id:'', City: ''}]
       }));
-      return;
+    console.log(this.state.isServerError);
+    console.log(this.state.suggestions);
     };
   }, 1000);
 
@@ -84,10 +87,14 @@ loadSuggestions(value) {
 
   //fakerequest for testing download and error
   this.lastRequestId = setTimeout(() => {
-    this.setState({
+    console.log(this.state.isServerError);
+    if(!this.state.isServerError){
+      console.log('render the results');
+      this.setState({
       isLoading: false,
       suggestions: this.getSuggestions(value),
     });
+    }
   }, delay);
 
 }
@@ -196,7 +203,7 @@ renderSuggestionsContainer  ({ containerProps, children }) {
 };
 
 render() {
-   const { value, suggestions, noSuggestions, isLoading, noMatches } = this.state;
+   const { value, suggestions } = this.state;
    const inputProps = {
      placeholder: "Начните вводить код или название",
      value,
@@ -213,6 +220,7 @@ render() {
           renderSuggestion={renderSuggestion}
           inputProps={inputProps}
           renderSuggestionsContainer={this.renderSuggestionsContainer}
+          highlightFirstSuggestion={true}
           />
         </div>
       );
