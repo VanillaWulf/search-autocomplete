@@ -1,9 +1,14 @@
-.react-autosuggest__container {
+.react-autosuggest{
   font-family: 'Segoe UI', sans-serif;
   font-size: 14px;
   font-weight: 300;
   color: #404040;
   line-height: 20px;
+  position: relative;
+}
+
+.react-autosuggest__container {
+  font: inherit;
 
   position: relative;
   margin-top: 0px;
@@ -16,6 +21,10 @@
   padding: 5px 10px;
   box-sizing: border-box;
   border: 1px solid #aaa;
+}
+
+.react-autosuggest__input--validation-error{
+  outline: 1px solid #ff3850;
 }
 
 .react-autosuggest__input--focused {
@@ -38,7 +47,7 @@
 .react-autosuggest__suggestions-container--open {
   display: block;
   position: absolute;
-  top: 39px;
+  top: 40px;
   width: 320px;
   border: 1px solid #aaa;
   background-color: #fff;
@@ -115,4 +124,12 @@
   background-color: #81b3d2;
   cursor: pointer;
   color: #ffffff;
+}
+
+.react-autosuggest__advice__validation{
+  font: inherit;
+  color: #ff3850;
+  position: absolute;
+  top: 45px;
+  left: 5px;
 }

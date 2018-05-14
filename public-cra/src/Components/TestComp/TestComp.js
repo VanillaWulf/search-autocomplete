@@ -29,12 +29,13 @@ function escapeRegexCharacters(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
-function ExampleDownshift({itemToString, items, error, noMatches, isLoading, isServerError, message, value,refreshState,  ...rest}) {
+function ExampleDownshift({itemToString, onBlurParse, items, error, isValidate, noMatches, isLoading, isServerError, message, value, refreshState, validationData,  ...rest}) {
 
   return (
     <Downshift
       itemToString={itemToString}
       refreshState={refreshState}
+      onBlurParse={onBlurParse}
       {...rest}
       render={({
         getLabelProps,
@@ -63,10 +64,14 @@ function ExampleDownshift({itemToString, items, error, noMatches, isLoading, isS
               {...getInputProps({
                 isOpen,
                 placeholder: 'Введите или выберите из списка',
-
+                isValidate,
+                onBlur: event=>{
+                onBlurParse(value);
+                }
               })}
             />
-            <ControllerButton {...getButtonProps()}>
+            <ControllerButton {...getButtonProps()
+            }>
                 <ArrowIcon isOpen={isOpen} />
               </ControllerButton>
           </Div>
@@ -85,7 +90,6 @@ function ExampleDownshift({itemToString, items, error, noMatches, isLoading, isS
                           {itemToString(item)}
                         </Item>
                       )))
-
                     }
                     {noMatches
                       ? <error css={{marginTop: 20}}>
@@ -104,6 +108,11 @@ function ExampleDownshift({itemToString, items, error, noMatches, isLoading, isS
                         : null}
             </Menu>
           )}
+          {!isValidate
+            ? <div css={{marginTop: 20}}>
+                Ошибка Blur
+              </div>
+          : null}
         </div>
       )}
     />
@@ -119,20 +128,24 @@ class TestComp extends React.Component {
           isLoading: false,
           noMatches: false,
           isServerError: false,
-          value: ''
+          value: '',
+          isValidate: true,
+          validationData: []
           };
 
   constructor(props){
     super(props);
-    this.refreshState= this.refreshState.bind (this);
+    this.refreshState= this.refreshState.bind(this);
+    this.onBlurParse = this.onBlurParse.bind(this);
   }
 
+  // Will not fire in case of an item selection from the menu!
 
   handleStateChange = (changes, downshiftState) => {
     if (changes.hasOwnProperty('inputValue')) {
       this.loadItems(changes.inputValue);
       this.setState({
-        value: changes.inputValue
+        value: changes.inputValue,
       })
       /*this.setState({
         items: this.getItems(changes.inputValue)})*/
@@ -159,6 +172,9 @@ class TestComp extends React.Component {
 
   const regex = new RegExp('^' + escapedValue, 'i');
 
+  this.setState(()=>({
+    isValidate: true
+  }));
 
     // Cancel the previous request
     if (this.lastRequestId !== null) {
@@ -175,6 +191,7 @@ class TestComp extends React.Component {
       console.log('start loading');
       if(!this.state.allItems){
         this.setState(() => ({
+          items: null,
           isLoading: true,
           isServerError: false,
           }));
@@ -211,33 +228,53 @@ class TestComp extends React.Component {
 
   };
 
-
   parseNoMatches(value){
-
     if(value.length==0){
              this.setState(() => ({
-              noSuggestions: true,
               noMatches: true
             }));
              return true;
            } else {
               this.setState(() => ({
-              noSuggestions: false,
               noMatches: false,
-              message: ''
+              message: '',
+              validationData: this.getKeyArray(value,"City")
              }));
               return false;
             }
   }
 
-  itemToString(i) {
-    return i ? i.City : ''
+  onBlurParse(){
+    if(this.state.validationData.indexOf(this.state.value)===-1){
+      console.log('render the onBlur error');
+      this.setState(()=>({
+        isValidate: false
+      }));
+    }
   }
+
+  getKeyArray(arrayOfObj, keyName){
+    let resultArr=[];
+    for(let i=0; i < arrayOfObj.length; i++){
+      let nowObj = arrayOfObj[i];
+      for(let key in nowObj){
+        if(key == keyName){
+          resultArr.push(nowObj[key]);
+        };
+      };
+    };
+    return resultArr;
+  };
+
+
+  itemToString(i) {
+    return i ? i.City : '';
+  };
 
   refreshState(){
    console.log('Start refresh with ' + this.state.value);
    this.loadItems(this.state.value);
-  }
+ };
 
   render() {
 //    let {error}=this.state;
@@ -261,6 +298,9 @@ class TestComp extends React.Component {
           isServerError={this.state.isServerError}
           refreshState={this.refreshState}
           defaultHighlightedIndex={0}
+          isValidate={this.state.isValidate}
+          validationData={this.state.validationData}
+          onBlurParse={this.onBlurParse}
         />
       </Div>
     )

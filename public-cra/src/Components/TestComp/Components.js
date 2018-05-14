@@ -28,7 +28,7 @@ const Item = glamorous.div(
 const onAttention = '&:active, &:focus';
 const Input = glamorous.input(
   {
-    width: '280px', // full width - icon width/2 - border
+    width: '280px',
     height: '40px',
     padding: '5px 10px',
     boxSizing: 'border-box',
@@ -42,19 +42,23 @@ const Input = glamorous.input(
       opacity: '0.6'
     }
   },
-  ({isOpen}) =>
+  /*({isOpen}) =>
     isOpen
       ? {
-          borderBottomLeftRadius: '0',
+        /*  borderBottomLeftRadius: '0',
           borderBottomRightRadius: '0',
           [onAttention]: {
             boxShadow: 'none',
           },
         }
-      : null,
-)
-
-
+      : null,*/
+    ({isValidate}) =>
+        !isValidate
+          ? {
+              outline: '1px solid #ff3850'
+            }
+          : null,
+      )
 
 const Label = glamorous.label({
   fontWeight: 'bold',
@@ -94,6 +98,7 @@ const ControllerButton = glamorous.button({
   height: '100%',
   justifyContent: 'center',
   alignItems: 'center',
+  tabindex: '-1'
 
 })
 
@@ -112,11 +117,10 @@ const Error = glamorous.div({
 function ArrowIcon({isOpen}) {
   return (
     <svg
-      viewBox="0 0 20 20"
+      viewBox="0 0 18 18"
       preserveAspectRatio="none"
       width={16}
-      fill="transparent"
-      stroke="#979797"
+      stroke="#aaa"
       strokeWidth="1.1px"
       transform={isOpen ? 'rotate(180)' : null}
     >
