@@ -1,5 +1,7 @@
-import React from 'react'
-import glamorous from 'glamorous'
+import React from 'react';
+import glamorous from 'glamorous';
+import {css} from 'glamor';
+//import glamor from 'glamor';
 
 const Item = glamorous.div(
   {
@@ -8,111 +10,154 @@ const Item = glamorous.div(
     display: 'block',
     border: 'none',
     textAlign: 'left',
-    minHeight:'20px',
+    minHeight: 20,
     padding:'10px 10px',
     borderTop: 'none',
     font:'inherit',
     },
-  ({isActive, isSelected}) => {
-    const styles = []
-    if (isActive) {
-      styles.push({
-        color: 'rgba(0,0,0,.95)',
-        background: '#81b3d2',
-      })
-    }
+    ({isActive}) =>
+        isActive
+          ? {
+              background: '#81b3d2'
+            }
+          : null,
+);
 
-    return styles
-  },
-)
 const onAttention = '&:active, &:focus';
 const Input = glamorous.input(
   {
-    width: '280px',
-    height: '40px',
-    padding: '5px 10px',
+    font: 'inherit',
+    width: 280,
+    height: 40,
+    padding: '5px 17px 5px 10px',
     boxSizing: 'border-box',
     border: '1px solid #aaa',
-    transition: 'box-shadow .1s ease,width .1s ease',
     [onAttention]: {
       outline: '2px solid #81b3d2',
     },
-
     ['&:focus::placeholder']:{
       opacity: '0.6'
     }
   },
-  /*({isOpen}) =>
-    isOpen
-      ? {
-        /*  borderBottomLeftRadius: '0',
-          borderBottomRightRadius: '0',
-          [onAttention]: {
-            boxShadow: 'none',
-          },
-        }
-      : null,*/
-    ({isValidate}) =>
+  ({isValidate}) =>
         !isValidate
           ? {
               outline: '1px solid #ff3850'
             }
           : null,
-      )
+    ({isChoosen}) =>
+        !isChoosen
+          ? {
+              outline: '1px solid #ff3850'
+            }
+          : null,
+  );
 
 const Label = glamorous.label({
-  fontWeight: 'bold',
+  font: 'inherit',
+  fontSize: 20,
   display: 'block',
-  marginBottom: 10,
-})
+  marginBottom: 20
+});
 
 const Menu = glamorous.div({
-  maxHeight: '350px',
+  font: 'inherit',
+  width:320,
+  maxHeight: 350,
   font:'inherit',
   overflowY: 'auto',
   overflowX: 'hidden',
-  borderTopWidth: '0',
-  outline: '0',
-  borderRadius: '0 0 .28571429rem .28571429rem',
-  transition: 'opacity .1s ease',
   boxShadow: '0px 2px 8px 0px rgba(122,121,122)',
-  border: '1px solid #aaa',
-  borderRightWidth: 1,
-  borderBottomWidth: 1,
-  borderLeftWidth: 1,
-  borderStyle: 'solid',
+  /*border: '1px solid #aaa',
+  borderStyle: 'solid',*/
   position: 'absolute',
-  backgroundColor:'white'
+  backgroundColor:'white',
+  zIndex: '2'
 })
 
 const ControllerButton = glamorous.button({
   backgroundColor: 'transparent',
+  tabindex: '0',
   border: 'none',
   position: 'absolute',
-  right: 0,
+  right: 41,
   top: 0,
   cursor: 'pointer',
-  width: 47,
+  width: 30,
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
   justifyContent: 'center',
-  alignItems: 'center',
-  tabindex: '-1'
+  alignItems: 'center'
+});
 
-})
-
-const Error = glamorous.div({
+const ErrorBox = glamorous.div({
+  maxWidth:'320',
   font:'inherit',
-  color: '#aaa',
-  padding: '.75rem 1.25rem',
-  marginBottom: '1rem',
-  border: '1px solid transparent',
-  borderRadius: '.25rem',
-  backgroundColor: '#f2dede',
-  borderColor: '#ebcccc',
+  color:'#aaa',
+  boxSizing:'border-box',
+  padding: '5px 10px'
+});
+
+const ServerErrorBox  = glamorous.div({
+  maxWidth:'320',
+  font:'inherit',
+  color:'#aaa',
+  boxSizing:'border-box',
+  padding: '5px 0px 0 10px'
+});
+
+const ServerErrorBoxButton = glamorous.button({
+  font: 'inherit',
+  background: 'none',
+  border: 'none',
+  width: '320',
+  height: '35',
+  textAlign: 'left',
+  marginLeft: '-10',
+//  paddingLeft: '10',
+  marginBottom: '0',
+  ['&:hover']: {
+    backgroundColor: '#81b3d2',
+    cursor: 'pointer',
+    color: '#ffffff'
+  },
 })
 
+const spin = css.keyframes({
+  '0%': { transform: `rotate(0deg)` },
+  '100%': { transform: `rotate(360deg)` }
+});
+
+const LoadBox = glamorous.div({
+  font:'inherit',
+  color:'#aaa',
+  boxSizing:'border-box',
+  padding: '5px 10px 5px 35px',
+
+  ['&::before']:{
+    borderTop: '1px solid #aaa',
+    borderRadius: '50%',
+    position: 'absolute',
+    top: '8',
+    left: '15',
+    content: '""',
+    width: '15',
+    height: '15',
+    animation: `${spin} 0.8s linear infinite`,
+    zIndex: '2'
+}
+});
+
+const ValidationError = glamorous.div({
+  font: 'inherit',
+  width: '',
+  color: '#ff3850',
+  position: 'absolute',
+  zIndex: '0',
+  top: 85,
+  left: 5
+})
 
 function ArrowIcon({isOpen}) {
   return (
@@ -129,4 +174,4 @@ function ArrowIcon({isOpen}) {
   )
 }
 
-export {Menu, ControllerButton, Input, Item, ArrowIcon, Error, Label}
+export {Menu, ControllerButton, Input, Item, ArrowIcon, ErrorBox, LoadBox, ServerErrorBox, ServerErrorBoxButton, ValidationError, Label}

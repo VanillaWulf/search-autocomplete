@@ -72,8 +72,6 @@ const Input = glamorous.input(
       : null,
 )
 
-
-
 const Label = glamorous.label({
   fontWeight: 'bold',
   display: 'block',

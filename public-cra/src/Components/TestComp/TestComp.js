@@ -18,8 +18,11 @@ import {
   Input,
   Item,
   ArrowIcon,
-  XIcon,
-  Error
+  ErrorBox,
+  LoadBox,
+  ServerErrorBox,
+  ServerErrorBoxButton,
+  ValidationError
 } from './Components.js';
 
 const kladr = customData;
@@ -29,7 +32,7 @@ function escapeRegexCharacters(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
-function ExampleDownshift({itemToString, onBlurParse, items, error, isValidate, noMatches, isLoading, isServerError, message, value, refreshState, validationData,  ...rest}) {
+function ExampleDownshift({itemToString, onBlurParse, items, isValidate, isChoosen, noMatches, isLoading, isServerError, message, value, refreshState, validationData,  ...rest}) {
 
   return (
     <Downshift
@@ -38,14 +41,11 @@ function ExampleDownshift({itemToString, onBlurParse, items, error, isValidate, 
       onBlurParse={onBlurParse}
       {...rest}
       render={({
-        getLabelProps,
         getInputProps,
         getButtonProps,
         getItemProps,
         isOpen,
         toggleMenu,
-        clearSelection,
-        selectedItem,
         inputValue,
         highlightedIndex,
       }) => (
@@ -58,19 +58,28 @@ function ExampleDownshift({itemToString, onBlurParse, items, error, isValidate, 
           width: 320,
           zIndex:'2'
           })}>
-          <Label {...getLabelProps()}>City</Label>
+          <Label>Город</Label>
           <Div position="relative">
             <Input
               {...getInputProps({
                 isOpen,
                 placeholder: 'Введите или выберите из списка',
                 isValidate,
+                isChoosen,
                 onBlur: event=>{
-                onBlurParse(value);
-                }
+                  // по умолчанию при onBlur input-значение не сохраняется или встает последнее выбранное(isSelected)
+                  // обнуляем дефолтное поведение
+                  onBlurParse(value);
+                },
+                onOuterClick: event=>{
+                  // по умолчанию при onBlur input-значение не сохраняется или встает последнее выбранное(isSelected)
+                  // обнуляем дефолтное поведение
+                  onBlurParse(value);
+                  console.log('123');``
+                },
               })}
             />
-            <ControllerButton {...getButtonProps()
+            <ControllerButton tabIndex="-1" {...getButtonProps()
             }>
                 <ArrowIcon isOpen={isOpen} />
               </ControllerButton>
@@ -84,34 +93,39 @@ function ExampleDownshift({itemToString, onBlurParse, items, error, isValidate, 
                             item,
                             index,
                             isActive: highlightedIndex === index,
-                            isSelected: selectedItem === item,
-                          })}
+                            })}
                         >
                           {itemToString(item)}
                         </Item>
                       )))
                     }
                     {noMatches
-                      ? <error css={{marginTop: 20}}>
+                      ? <ErrorBox>
                           Не найдено
-                        </error>
+                        </ErrorBox>
                       : null}
                       {isLoading
-                        ? <div css={{marginTop: 20}}>
+                        ? <LoadBox>
                             Загрузка
-                          </div>
+                          </LoadBox>
                         : null}
                         {isServerError
-                          ? <div css={{marginTop: 20}}>
-                              Ошибка сервера <button onClick={refreshState}>reload</button>
-                            </div>
+                          ? <ServerErrorBox>
+                              Что-то пошло не так. Проверьте соединение с интернетом и попробуйте еще раз <br />
+                              <ServerErrorBoxButton onClick={refreshState}>Обновить</ ServerErrorBoxButton>
+                            </ServerErrorBox>
                         : null}
             </Menu>
           )}
           {!isValidate
-            ? <div css={{marginTop: 20}}>
-                Ошибка Blur
-              </div>
+            ? <ValidationError>
+            Добавьте значение в справочник или выберите другое значение из списка
+              </ValidationError>
+          : null}
+          {!isChoosen
+            ? <ValidationError>
+                Выберите значение из списка
+              </ValidationError>
           : null}
         </div>
       )}
@@ -120,6 +134,7 @@ function ExampleDownshift({itemToString, onBlurParse, items, error, isValidate, 
 }
 
 class TestComp extends React.Component {
+  //за старт берется нулевое значение, в идеале нужно сделать постепенную загрузку кладра
   allItems = null;
   state = {
           items: this.allItems,
@@ -130,7 +145,8 @@ class TestComp extends React.Component {
           isServerError: false,
           value: '',
           isValidate: true,
-          validationData: []
+          validationData: [],
+          isChoosen: true
           };
 
   constructor(props){
@@ -217,7 +233,7 @@ class TestComp extends React.Component {
       console.log('render matches');
       console.log(this.isServerError);
       if(!this.state.isServerError){
-      console.log('set the state')
+      console.log('set the state');
       this.setState({
         isLoading: false,
         items: kladr.filter(kladr => regex.test(kladr.City)),
@@ -225,7 +241,6 @@ class TestComp extends React.Component {
         });
       }
     }, delay);
-
   };
 
   parseNoMatches(value){
@@ -245,26 +260,34 @@ class TestComp extends React.Component {
   }
 
   onBlurParse(){
-    if(this.state.validationData.indexOf(this.state.value)===-1){
+    //todo: не всегда корректно срабатывает на выход из фокуса при клике на свободную область, отлажано для tab
+
+    if (this.state.isLoading || this.state.noMatches || this.state.isServerError) {
+        this.setState(() => ({
+            isChoosen: false,
+            isValidate: true,
+        }))
+    } else if(this.state.validationData.indexOf(this.state.value)===-1){
       console.log('render the onBlur error');
       this.setState(()=>({
-        isValidate: false
+        isValidate: false,
+        isChoosen: true
       }));
     }
   }
 
-  getKeyArray(arrayOfObj, keyName){
-    let resultArr=[];
-    for(let i=0; i < arrayOfObj.length; i++){
-      let nowObj = arrayOfObj[i];
-      for(let key in nowObj){
-        if(key == keyName){
-          resultArr.push(nowObj[key]);
+  getKeyArray(objectsArray, keyName){
+      let resultArray=[];
+      for(let i=0; i < objectsArray.length; i++){
+        let newObject = objectsArray[i];
+        for(let key in newObject){
+          if(key == keyName){
+            resultArray.push(newObject[key]);
+          };
         };
       };
+      return resultArray;
     };
-    return resultArr;
-  };
 
 
   itemToString(i) {
@@ -283,6 +306,8 @@ class TestComp extends React.Component {
         css={{
           display: 'flex',
           flexDirection: 'column',
+          position: 'relative',
+          marginBottom: '45'
         }}
       >
         <ExampleDownshift
@@ -301,6 +326,8 @@ class TestComp extends React.Component {
           isValidate={this.state.isValidate}
           validationData={this.state.validationData}
           onBlurParse={this.onBlurParse}
+          isChoosen={this.state.isChoosen}
+          resetInputOnSelection={false}
         />
       </Div>
     )
