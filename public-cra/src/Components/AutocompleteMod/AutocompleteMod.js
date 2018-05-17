@@ -1,4 +1,4 @@
-//component with testting error of connecting, todo: add comments
+//с фейковой задержкой без скрола
 import React from 'react';
 import './AutocompleteMod.css';
 import kladr from '../../testdata/kladr.json';
@@ -10,18 +10,18 @@ import Autosuggest from 'react-autosuggest';
 
 function escapeRegexCharacters(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+};
 
 function getSuggestionValue(suggestion) {
     return suggestion.City;
-}
+};
 
 function renderSuggestion(suggestion) {
     return ( <div>
               <span>{suggestion.City}</span>
             </div>
           );
-}
+};
 
 class AutocompleteMod extends React.Component {
     constructor(props) {
@@ -170,12 +170,18 @@ class AutocompleteMod extends React.Component {
                 inputClassName: 'react-autosuggest__input react-autosuggest__input--validation-error'
             }))
         } else if (this.state.validationData.indexOf(this.state.value) === -1) {
+            console.log(this.state.validationData.indexOf(this.state.value));
             console.log('render the onBlur error');
             this.setState(() => ({
                 isValidate: false,
                 isChoosen: true,
                 inputClassName: 'react-autosuggest__input react-autosuggest__input--validation-error'
             }));
+        }else{
+          this.setState(() => ({
+              isValidate: true,
+              isChoosen: true
+          }));
         }
     }
 
@@ -234,7 +240,7 @@ class AutocompleteMod extends React.Component {
             return (
               <div { ...containerProps}>
                 <div className = "footer react-autosuggest__advice react-autosuggest__advice--server-error" >
-                  Что - то пошло не так.Проверьте соединение с интернетом и попробуйте еще раз < br / >
+                  Что - то пошло не так. Проверьте соединение с интернетом и попробуйте еще раз < br / >
                   <button className = "react-autosuggest__advice__refresh-button" onClick = {this.refreshState}>Обновить</button>
                 </div>
               </div>

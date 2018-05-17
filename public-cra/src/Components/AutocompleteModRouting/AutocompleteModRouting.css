@@ -1,28 +1,50 @@
-.react-autosuggest__container {
+.react-autosuggest{
   font-family: 'Segoe UI', sans-serif;
   font-size: 14px;
   font-weight: 300;
   color: #404040;
   line-height: 20px;
+  position: relative;
+}
 
+.react-autosuggest__container {
+  font: inherit;
   position: relative;
   margin-top: 0px;
   margin-bottom: 50px;
 }
 
 .react-autosuggest__input {
+  font: inherit;
   width: 280px;
   height: 40px;
   padding: 5px 10px;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   border: 1px solid #aaa;
+}
+
+.react-autosuggest__input--validation-error{
+  outline: 1px solid #ff3850;
 }
 
 .react-autosuggest__input--focused {
   outline: 2px solid #81b3d2;
 }
 
-.react-autosuggest__input--focused::placeholder{
+.react-autosuggest__input:focus::-webkit-input-placeholder{
+  opacity: 0.6;
+}
+
+.react-autosuggest__input:focus:-ms-input-placeholder{
+  opacity: 0.6;
+}
+
+.react-autosuggest__input:focus::-ms-input-placeholder{
+  opacity: 0.6;
+}
+
+.react-autosuggest__input:focus::placeholder{
   opacity: 0.6;
 }
 
@@ -38,12 +60,13 @@
 .react-autosuggest__suggestions-container--open {
   display: block;
   position: absolute;
-  top: 39px;
+  top: 40px;
   width: 320px;
   border: 1px solid #aaa;
   background-color: #fff;
   font: inherit;
-  box-shadow: 0px 2px 8px 0px rgba(122,121,122);
+  -webkit-box-shadow: 0px 2px 8px 0px rgba(122,121,122);
+          box-shadow: 0px 2px 8px 0px rgba(122,121,122);
   z-index: 2;
 }
 
@@ -65,7 +88,8 @@
 .react-autosuggest__advice{
   font: inherit;
   color: #aaa;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   padding: 5px 10px;
 }
 
@@ -74,6 +98,7 @@
 }
 
 .react-autosuggest__advice--loader{
+  font: inherit;
   padding-left: 35px;
   position: relative;
 }
@@ -87,13 +112,19 @@
   content: '';
   width: 15px;
   height: 15px;
-  animation: spin 0.8s linear infinite;
+  -webkit-animation: spin 0.8s linear infinite;
+          animation: spin 0.8s linear infinite;
   z-index: 2;
 }
 
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+}
+
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
 }
 
 .react-autosuggest__advice--server-error{
@@ -101,6 +132,7 @@
 }
 
 .react-autosuggest__advice__refresh-button{
+    font: inherit;
     background: none;
     border: none;
     width: 320px;
@@ -115,4 +147,13 @@
   background-color: #81b3d2;
   cursor: pointer;
   color: #ffffff;
+}
+
+.react-autosuggest__advice__validation{
+  font: inherit;
+  width: 300px;
+  color: #ff3850;
+  position: absolute;
+  top: 45px;
+  left: 5px;
 }

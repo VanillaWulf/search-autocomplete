@@ -39,18 +39,17 @@ const Input = glamorous.input(
       opacity: '0.6'
     }
   },
-  ({isValidate}) =>
-        !isValidate
-          ? {
-              outline: '1px solid #ff3850'
-            }
-          : null,
-    ({isChoosen}) =>
-        !isChoosen
-          ? {
-              outline: '1px solid #ff3850'
-            }
-          : null,
+    ({isValidate, isChoosen, isOpen}) => {
+          const styles = []
+          if (!isOpen) {
+            if(!isValidate || !isChoosen){
+            styles.push({
+            outline: '1px solid #ff3850'
+            })
+          }
+          }
+          return styles
+        }
   );
 
 const Label = glamorous.label({
@@ -64,15 +63,12 @@ const Menu = glamorous.div({
   font: 'inherit',
   width:320,
   maxHeight: 350,
-  font:'inherit',
   overflowY: 'auto',
   overflowX: 'hidden',
   boxShadow: '0px 2px 8px 0px rgba(122,121,122)',
-  /*border: '1px solid #aaa',
-  borderStyle: 'solid',*/
   position: 'absolute',
   backgroundColor:'white',
-  zIndex: '2'
+  zIndex: '1'
 })
 
 const ControllerButton = glamorous.button({
@@ -115,7 +111,6 @@ const ServerErrorBoxButton = glamorous.button({
   height: '35',
   textAlign: 'left',
   marginLeft: '-10',
-//  paddingLeft: '10',
   marginBottom: '0',
   ['&:hover']: {
     backgroundColor: '#81b3d2',
@@ -128,6 +123,18 @@ const spin = css.keyframes({
   '0%': { transform: `rotate(0deg)` },
   '100%': { transform: `rotate(360deg)` }
 });
+
+const SpinBox=glamorous.div({
+  width: 15,
+  height: 15,
+  borderTop: '1px solid #aaa',
+  borderRadius: '50%',
+  position: 'absolute',
+  right: 48,
+  top: 12,
+  content: '""',
+  animation: `${spin} 0.8s linear infinite`,
+})
 
 const LoadBox = glamorous.div({
   font:'inherit',
@@ -145,16 +152,14 @@ const LoadBox = glamorous.div({
     width: '15',
     height: '15',
     animation: `${spin} 0.8s linear infinite`,
-    zIndex: '2'
-}
+  }
 });
 
 const ValidationError = glamorous.div({
   font: 'inherit',
-  width: '',
+  width: 300,
   color: '#ff3850',
   position: 'absolute',
-  zIndex: '0',
   top: 85,
   left: 5
 })
@@ -174,4 +179,4 @@ function ArrowIcon({isOpen}) {
   )
 }
 
-export {Menu, ControllerButton, Input, Item, ArrowIcon, ErrorBox, LoadBox, ServerErrorBox, ServerErrorBoxButton, ValidationError, Label}
+export {SpinBox, Menu, ControllerButton, Input, Item, ArrowIcon, ErrorBox, LoadBox, ServerErrorBox, ServerErrorBoxButton, ValidationError, Label}
