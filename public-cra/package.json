@@ -7,15 +7,13 @@
     "glamor": "^2.20.40",
     "glamorous": "^4.12.5",
     "lodash": "^4.17.10",
-    "match-sorter": "^2.2.3",
     "react": "^16.3.2",
     "react-autocomplete": "^1.8.1",
     "react-autosuggest": "^9.3.4",
     "react-combobox": "^0.1.2",
     "react-dom": "^16.3.2",
     "react-scripts": "1.1.4",
-    "react-widgets": "^4.2.6",
-    "starwars-names": "^1.6.0"
+    "react-widgets": "^4.2.6"
   },
   "scripts": {
     "start": "react-scripts start",

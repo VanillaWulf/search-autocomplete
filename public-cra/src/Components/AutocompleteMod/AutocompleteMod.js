@@ -121,7 +121,8 @@ class AutocompleteMod extends React.Component {
             this.setState(() => ({
                 noSuggestions: false,
                 noMatches: false,
-                message: `Показано 5 из ${searchResult.length-5} найденных городов. Уточните запрос, чтобы увидеть остальные`,
+                message: `Показано 5 из ${searchResult.length-5} найденных городов.
+                 Уточните запрос, чтобы увидеть остальные`,
                 validationData: this.getKeyArray(searchResult, "City")
             }));
             return searchResult.splice(0, 5);
@@ -163,6 +164,8 @@ class AutocompleteMod extends React.Component {
             isValidate: false
           }));
         }*/
+
+
         if (this.state.isLoading || this.state.noMatches || this.state.isServerError || !this.state.value) {
             this.setState(() => ({
                 isChoosen: false,
@@ -240,7 +243,7 @@ class AutocompleteMod extends React.Component {
             return (
               <div { ...containerProps}>
                 <div className = "footer react-autosuggest__advice react-autosuggest__advice--server-error" >
-                  Что - то пошло не так. Проверьте соединение с интернетом и попробуйте еще раз < br / >
+                  Что-то пошло не так. Проверьте соединение с интернетом и попробуйте еще раз < br / >
                   <button className = "react-autosuggest__advice__refresh-button" onClick = {this.refreshState}>Обновить</button>
                 </div>
               </div>

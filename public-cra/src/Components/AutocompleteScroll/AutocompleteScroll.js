@@ -46,7 +46,8 @@ message, value, validationData,
         isOpen,
         inputValue,
         highlightedIndex,
-        closeMenu
+        closeMenu,
+        openMenu
       }) => (
         <div className={css({
           fontFamily: "'Segoe UI', sans-serif",
@@ -57,7 +58,7 @@ message, value, validationData,
           width: 320,
           zIndex:'2'
         })}>
-          <Label>Город</Label>
+          <Label>Со скролом</Label>
           <Div position="relative">
             <Input
               {...getInputProps({
@@ -72,6 +73,9 @@ message, value, validationData,
                   if(!isRefreshing){
                     closeMenu()
                   }
+                },
+                onFocus: event=>{
+                  openMenu()
                 }
             })}
             />
@@ -133,7 +137,7 @@ message, value, validationData,
   );
 }
 
-class TestComp extends React.Component {
+class AutocompleteScroll extends React.Component {
   //за старт берется нулевое значение
   allItems = null;
   state = {
@@ -344,4 +348,4 @@ class TestComp extends React.Component {
   }
 }
 
-export default TestComp;
+export default AutocompleteScroll;

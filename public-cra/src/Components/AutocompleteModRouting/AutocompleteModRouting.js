@@ -1,6 +1,6 @@
 //ходит на сервер, забирает данные
 import React from 'react';
-import './AutocompleteModRouting.css';
+//import './AutocompleteModRouting.css';
 import Autosuggest from 'react-autosuggest';
 import GetKladr from '../../util/GetKladr.js';
 
@@ -144,13 +144,14 @@ class AutocompleteModRouting extends React.Component {
           }));
         }*/
         if (this.state.isLoading || this.state.noMatches || this.state.isServerError || !this.state.value) {
+            console.log('not choosen');
             this.setState(() => ({
                 isChoosen: false,
                 isValidate: true,
                 inputClassName: 'react-autosuggest__input react-autosuggest__input--validation-error'
             }))
         } else if (this.state.validationData.indexOf(this.state.value) === -1) {
-            console.log('render the onBlur error');
+            console.log('choosen, not validated');
             this.setState(() => ({
                 isValidate: false,
                 isChoosen: true,

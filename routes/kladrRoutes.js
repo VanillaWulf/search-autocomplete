@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const knex = require('../db/knex');
+
 var kladrJson = require('../kladr.json');
 var kladr = require('../kladr.json');
 
@@ -31,9 +31,7 @@ router.get('/:value', function(req, res) {
   let value = req.params.value;
 
   var responseObject = getSuggestions(value);
-  //res.json(responseObject);
-  //console.log(responseObject);
-//console.log(searchResult);
+
   res.json(responseObject );
 });
 
