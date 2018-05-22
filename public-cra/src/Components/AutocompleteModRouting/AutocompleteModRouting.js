@@ -1,16 +1,9 @@
-//с фейковой задержкой без скрола
+//ходит на сервер, забирает данные
 import React from 'react';
-import './AutocompleteMod.css';
-import kladr from '../../testdata/kladr.json';
+import './AutocompleteModRouting.css';
 import Autosuggest from 'react-autosuggest';
+import GetKladr from '../../util/GetKladr.js';
 
-//const kladr = customData;
-
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
-
-function escapeRegexCharacters(str) {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-};
 
 function getSuggestionValue(suggestion) {
     return suggestion.City;
@@ -23,13 +16,14 @@ function renderSuggestion(suggestion) {
           );
 };
 
-class AutocompleteMod extends React.Component {
+class AutocompleteModRouting extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             value: '',
             suggestions: [],
+            results:[],
             noSuggestions: true, //тригерит наличие совпадений (нужен для рендеринга состояния загрузки)
             isLoading: false,
             message: '',
@@ -54,16 +48,17 @@ class AutocompleteMod extends React.Component {
 
     loadSuggestions(value) {
 
-        // используем только для имитации запроса
-        if (this.lastRequestId !== null) {
-            clearTimeout(this.lastRequestId);
-        };
-
         this.setState(() => ({
             noSuggestions: true,
             isValidate: true,
-            inputClassName: 'react-autosuggest__input'
+            inputClassName: 'react-autosuggest__input',
+            results: []
         }));
+
+        GetKladr.getKladrArray(value).then(results =>this.setState({results}));
+        //обрабатывает только валидный
+
+        console.log(this.state.results);
 
         setTimeout(() => {
             console.log('start loading');
@@ -77,52 +72,36 @@ class AutocompleteMod extends React.Component {
         }, 500);
 
         setTimeout(() => {
-            if (this.state.isLoading) {
-                console.log(`serverErrorCheck`);
-                this.setState(() => ({
-                    isLoading: false,
-                    isServerError: true,
-                    suggestions: [{
-                        Id: '',
-                        City: ''
-                    }]
-                }));
-                console.log(this.state.isServerError);
-                console.log(this.state.suggestions);
-            };
-        }, 1000);
+          if(this.state.results.length===0){
+           console.log('render error');
+            this.setState(() => ({
+              isLoading: false,
+              isServerError: true,
+              suggestions: [{}]
+            }));
+            return;
+          }else{
+            this.setState(() => ({
+              isLoading: false,
+              suggestions: this.getSuggestions()
+             }))
+          };
+        }, 1500);
 
-        let delay = Math.random() * (1500 - 500) + 500;
-
-        //делаем фейковый запрос с рандомной задержкой
-        this.lastRequestId = setTimeout(() => {
-            console.log(this.state.isServerError);
-            if (!this.state.isServerError) {
-                console.log('render the results');
-                this.setState({
-                    isLoading: false,
-                    suggestions: this.getSuggestions(value),
-                });
-            };
-        }, delay);
     }
 
     getSuggestions() {
-        const {
+      /*  const {
             value,
-        } = this.state;
-        const escapedValue = escapeRegexCharacters(value.trim());
-        if (escapedValue === '') {
-          return [];
-        };
-        const regex = new RegExp('^' + escapedValue, 'i');
-        let searchResult = kladr.filter(kladr => regex.test(kladr.City));
+        } = this.state;*/
+
+        let searchResult = this.state.results;
+
         if (searchResult.length > 5) {
             this.setState(() => ({
                 noSuggestions: false,
                 noMatches: false,
-                message: `Показано 5 из ${searchResult.length-5} найденных городов.
-                 Уточните запрос, чтобы увидеть остальные`,
+                message: `Показано 5 из ${searchResult.length-5} найденных городов. Уточните запрос, чтобы увидеть остальные`,
                 validationData: this.getKeyArray(searchResult, "City")
             }));
             return searchResult.splice(0, 5);
@@ -164,17 +143,15 @@ class AutocompleteMod extends React.Component {
             isValidate: false
           }));
         }*/
-
-
         if (this.state.isLoading || this.state.noMatches || this.state.isServerError || !this.state.value) {
+            console.log('not choosen');
             this.setState(() => ({
                 isChoosen: false,
                 isValidate: true,
                 inputClassName: 'react-autosuggest__input react-autosuggest__input--validation-error'
             }))
         } else if (this.state.validationData.indexOf(this.state.value) === -1) {
-            console.log(this.state.validationData.indexOf(this.state.value));
-            console.log('render the onBlur error');
+            console.log('choosen, not validated');
             this.setState(() => ({
                 isValidate: false,
                 isChoosen: true,
@@ -243,7 +220,7 @@ class AutocompleteMod extends React.Component {
             return (
               <div { ...containerProps}>
                 <div className = "footer react-autosuggest__advice react-autosuggest__advice--server-error" >
-                  Что-то пошло не так. Проверьте соединение с интернетом и попробуйте еще раз < br / >
+                  Что - то пошло не так. Проверьте соединение с интернетом и попробуйте еще раз < br / >
                   <button className = "react-autosuggest__advice__refresh-button" onClick = {this.refreshState}>Обновить</button>
                 </div>
               </div>
@@ -314,4 +291,4 @@ class AutocompleteMod extends React.Component {
         );
     }
 }
-export default AutocompleteMod;
+export default AutocompleteModRouting;

@@ -1,36 +1,21 @@
-import React, { Component } from 'react';
-import logo from '../../logo.svg';
+import React from 'react';
 import './App.css';
-import Autocomplete from 'react-autocomplete';
-import Autosuggest from 'react-autosuggest';
-//import ComboboxNonB from '../ComboboxNonB/ComboboxNonB.js'
 import AutocompleteMod from '../AutocompleteMod/AutocompleteMod.js'
-import AutocompleteModWithNumbers from '../AutocompleteModWithNumbers/AutocompleteModWithNumbers.js'
-import ExpressRouting from '../../util/ExpressRouting';
-
+import AutocompleteModRouting from '../AutocompleteModRouting/AutocompleteModRouting.js'
+import AutocompleteScroll from '../AutocompleteScroll/AutocompleteScroll.js'
+import MenuHeader from '../MenuHeader/MenuHeader.js'
 
 class App extends React.Component {
-  constructor() {
-    super();
-}
-
- /*componentDidMount(){
-   return fetch('api/hello')
-   .then((response) => response.json())
-   .then((responseJson) => {
-     this.setState({
-       message: responseJson.messege
-     })
-   })
- }*/
 
  render() {
-
     return (
-      <div>
+      <div className="wrapper">
+        <AutocompleteScroll />
+        <MenuHeader name={'С рандомной задержкой ответа'}/>
         <AutocompleteMod />
-        <AutocompleteModWithNumbers />
-      </div>
+        <MenuHeader name={'С запросом на сервер'}/>
+        <AutocompleteModRouting />
+        </div>
       );
   }
 }
