@@ -1,6 +1,6 @@
 //ходит на сервер, забирает данные
 import React from 'react';
-//import './AutocompleteModRouting.css';
+import './AutocompleteModRouting.css';
 import Autosuggest from 'react-autosuggest';
 import GetKladr from '../../util/GetKladr.js';
 

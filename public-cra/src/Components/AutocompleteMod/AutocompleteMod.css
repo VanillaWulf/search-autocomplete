@@ -20,23 +20,41 @@
   width: 252px;
   height: 31px;
   padding: 6px 27px 5px 6px;
-  box-shadow: inset 0px 1px 1px #404040;
-  box-shadow: inset 1px #404040;
+  -webkit-box-shadow: inset 0px 1px 1px #404040;
+          box-shadow: inset 0px 1px 1px #404040;
+  -webkit-box-shadow: inset 1px #404040;
+          box-shadow: inset 1px #404040;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   border: 1px solid #aaa;
 }
 
 .react-autosuggest__input--validation-error{
-  box-shadow: none;
+  -webkit-box-shadow: none;
+          box-shadow: none;
   border: 2px solid #da0c09;
   padding: 5px 26px 4px 5px;
 }
 
 .react-autosuggest__input:focus {
-  box-shadow: none;
+  -webkit-box-shadow: none;
+          box-shadow: none;
   border: 2px solid #5199db;
+  outline:0;
+  outline-offset: 0;
   padding: 5px 26px 4px 5px;
+}
+
+.react-autosuggest__input::-webkit-input-placeholder{
+  color: #b7b7b7;
+}
+
+.react-autosuggest__input:-ms-input-placeholder{
+  color: #b7b7b7;
+}
+
+.react-autosuggest__input::-ms-input-placeholder{
+  color: #b7b7b7;
 }
 
 .react-autosuggest__input::placeholder{

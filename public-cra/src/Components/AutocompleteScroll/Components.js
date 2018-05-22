@@ -33,13 +33,14 @@ const Input = glamorous.input(
     fontSize: 12.5,
     padding: '6px 27px 5px 6px',
     boxSizing: 'border-box',
+    boxShadow: 'inset 0px 1px 1px #404040;',
     border: '1px solid #aaa',
-    boxShadow: '1px solid #aaa',
     [onAttention]: {
       boxShadow:'none',
       border: '2px solid #5199db',
-      padding: '5px 26px 4px 5px'
-      //outline: '2px solid #81b3d2',
+      padding: '5px 26px 4px 5px',
+      outline:'0',
+      outlineOffset: '0'
     },
     ['&::placeholder']:{
       color: '#b7b7b7'
@@ -84,7 +85,6 @@ const Menu = glamorous.div({
 
 const ControllerButton = glamorous.button({
   backgroundColor: 'transparent',
-//  tabindex: '0',
   border: 'none',
   position: 'absolute',
   right: 65,
