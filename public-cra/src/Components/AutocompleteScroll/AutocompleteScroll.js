@@ -60,7 +60,7 @@ message, value, validationData,
         })}>
           <Label>Со скролом</Label>
           <Div position="relative">
-            <Input
+          <Input
               {...getInputProps({
                 isOpen,
                 placeholder: 'Введите или выберите из списка',
@@ -68,9 +68,9 @@ message, value, validationData,
                 isChoosen,
                 onBlur: event=>{
                   // скидываем дефолтный парсинг по выделениям
-                  event.preventDefault();
-                  onBlurParse(value);
-                  if(!isRefreshing){
+                event.preventDefault();
+                onBlurParse(value);
+                if(!isRefreshing){
                     closeMenu()
                   }
                 },
@@ -79,6 +79,7 @@ message, value, validationData,
                 }
             })}
             />
+
             { loadIco ?
               <SpinBox></SpinBox>
               :
@@ -86,7 +87,7 @@ message, value, validationData,
               }>
                   <ArrowIcon isOpen={isOpen} />
                 </ControllerButton>
-            }
+              }
         </Div>
           {! isOpen ? null : (
             <Menu>

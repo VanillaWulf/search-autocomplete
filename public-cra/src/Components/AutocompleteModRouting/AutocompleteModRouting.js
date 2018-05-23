@@ -32,7 +32,8 @@ class AutocompleteModRouting extends React.Component {
             isValidate: true,
             validationData: [],
             isChoosen: true,
-            inputClassName: 'react-autosuggest__input'
+            inputClassName: 'react-autosuggest__input',
+            footerClassName: 'footer react-autosuggest__advice react-autosuggest__advice--small'
         };
 
         this.lastRequestId = null;
@@ -101,8 +102,9 @@ class AutocompleteModRouting extends React.Component {
             this.setState(() => ({
                 noSuggestions: false,
                 noMatches: false,
-                message: `Показано 5 из ${searchResult.length-5} найденных городов. Уточните запрос, чтобы увидеть остальные`,
-                validationData: this.getKeyArray(searchResult, "City")
+                message: `Показано 5 из ${searchResult.length} найденных городов. Уточните запрос, чтобы увидеть остальные`,
+                validationData: this.getKeyArray(searchResult, "City"),
+                footerClassName: 'footer react-autosuggest__advice react-autosuggest__advice--small'
             }));
             return searchResult.splice(0, 5);
         } else if (searchResult.length === 0) {
@@ -119,7 +121,8 @@ class AutocompleteModRouting extends React.Component {
                 noSuggestions: false,
                 noMatches: false,
                 message: '',
-                validationData: searchResult
+                validationData: searchResult,
+                footerClassName: 'footer react-autosuggest__advice react-autosuggest__advice--small react-autosuggest__advice--not-display'
             }));
             return searchResult;
         };

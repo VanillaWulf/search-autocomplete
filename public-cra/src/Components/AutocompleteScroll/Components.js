@@ -74,13 +74,15 @@ const Label = glamorous.label({
 const Menu = glamorous.div({
   font: 'inherit',
   width:287,
-  maxHeight: 350,
+  maxHeight: 200,
   overflowY: 'auto',
   overflowX: 'hidden',
   boxShadow: '0px 2px 8px 0px rgba(122,121,122)',
   position: 'absolute',
   backgroundColor:'white',
-  zIndex: '1'
+  zIndex: '1',
+  top: 73,
+  left:2
 });
 
 const ControllerButton = glamorous.button({
@@ -147,8 +149,8 @@ const SpinBox=glamorous.div({
   borderTop: '1px solid #aaa',
   borderRadius: '50%',
   position: 'absolute',
-  right: 68,
-  top: 12,
+  right: 72,
+  top: 8,
   content: '""',
   animation: `${spin} 0.8s linear infinite`,
 });

@@ -134,7 +134,10 @@
   margin-bottom: 3px;
   letter-spacing: 0.4px;
   width: 230px;
+}
 
+.react-autosuggest__advice--not-display{
+  display: none;
 }
 
 .react-autosuggest__advice--loader{
