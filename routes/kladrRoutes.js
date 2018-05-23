@@ -23,6 +23,7 @@ function getSuggestions(value){
 /* GET kladr page. */
 
 router.get('/', function(req, res) {
+<<<<<<< test
    res.json(kladrJson);
 });
 
@@ -36,5 +37,21 @@ router.get('/:value', function(req, res) {
 });
 
 
+=======
+  res.json({ title: 'hello' });
+});
+
+router.get('/app', function(req, res) {
+  res.json({ title: 'app' });
+});
+
+router.get('/kladr', function(req, res) {
+  res.json({ title: 'kladr' });
+});
+
+router.get('/users', function(req, res) {
+  res.json({ title: 'users' });
+});
+>>>>>>> master
 
 module.exports = router;
